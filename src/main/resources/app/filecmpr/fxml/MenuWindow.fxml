@@ -57,7 +57,7 @@
                   <Insets left="15.0" />
                </VBox.margin>
             </Button>
-            <Button fx:id="btnStatics" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="139.0" mnemonicParsing="false" onAction="#showStats" prefHeight="80.0" prefWidth="215.0" style="-fx-background-color: transparent;" text="Statics" textFill="#363636">
+            <Button fx:id="btnStatics" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="139.0" mnemonicParsing="false" onAction="#showStats" prefHeight="80.0" prefWidth="215.0" style="-fx-background-color: transparent;" text="Statistics" textFill="#363636">
                <font>
                   <Font name="Verdana" size="20.0" />
                </font>

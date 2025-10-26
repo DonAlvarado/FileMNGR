@@ -1,46 +1,57 @@
 package app.filecmpr.controllers;
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
 import javafx.scene.control.Label;
-import javafx.collections.FXCollections;
+import java.io.File;
+import java.text.DecimalFormat;
+import app.filecmpr.utils.AppState;
 
 public class Statistics {
-
     @FXML private BarChart<String, Number> sizeChart;
     @FXML private PieChart ratioChart;
     @FXML private Label lblSummary;
 
+    private final DecimalFormat df = new DecimalFormat("0.00");
+
     @FXML
     public void initialize() {
-        // Datos de ejemplo — más adelante los llenarás con valores reales
-        updateStatistics(500, 200, 0.6);  // original, comprimido, ratio
+        lblSummary.setText("Esperando datos...");
+
+        if (AppState.lastOriginal != null && AppState.lastProcessed != null) {
+            updateStatistics(AppState.lastOriginal, AppState.lastProcessed, AppState.lastTime);
+        }
     }
 
-    public void updateStatistics(double originalKB, double processedKB, double compressionRatio) {
-        // --- BarChart ---
+    public void updateStatistics(File originalFile, File processedFile, long timeMs) {
+        if (!originalFile.exists() || !processedFile.exists()) {
+            lblSummary.setText("Archivos no válidos.");
+            return;
+        }
+
+        double originalKB = originalFile.length() / 1024.0;
+        double processedKB = processedFile.length() / 1024.0;
+        double ratio = processedKB / originalKB;
+        double saving = originalKB - processedKB;
+
         sizeChart.getData().clear();
+        XYChart.Series<String, Number> s = new XYChart.Series<>();
+        s.setName("Tamaño (KB)");
+        s.getData().add(new XYChart.Data<>("Original", originalKB));
+        s.getData().add(new XYChart.Data<>("Procesado", processedKB));
+        sizeChart.getData().add(s);
 
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Tamaño");
-        series.getData().add(new XYChart.Data<>("Original", originalKB));
-        series.getData().add(new XYChart.Data<>("Procesado", processedKB));
-
-        sizeChart.getData().add(series);
-
-        // --- PieChart ---
         ratioChart.setData(FXCollections.observableArrayList(
-                new PieChart.Data("Ahorro", originalKB - processedKB),
-                new PieChart.Data("Tamaño restante", processedKB)
+                new PieChart.Data("Ahorro", Math.max(0, saving)),
+                new PieChart.Data("Restante", processedKB)
         ));
 
-        // --- Resumen textual ---
-        lblSummary.setText(String.format(
-                "Tamaño original: %.2f KB\n" +
-                        "Tamaño procesado: %.2f KB\n" +
-                        "Tasa de compresión: %.1f%%\n" +
-                        "Reducción total: %.2f KB",
-                originalKB, processedKB, (compressionRatio * 100), (originalKB - processedKB)
-        ));
+        lblSummary.setText(
+                "Original: " + df.format(originalKB) + " KB\n" +
+                        "Procesado: " + df.format(processedKB) + " KB\n" +
+                        "Tasa: " + df.format((1 - ratio) * 100) + "%\n" +
+                        "Tiempo: " + timeMs + " ms"
+        );
     }
 }

@@ -26,7 +26,7 @@
                         <Image url="@../images/View.png" />
                      </image>
                   </ImageView>
-                  <Label text="View Files" textFill="WHITE">
+                  <Label text="Gestión de Archivos" textFill="WHITE">
                      <font>
                         <Font name="Verdana Bold" size="18" />
                      </font>
@@ -39,30 +39,55 @@
 
    <!-- Main content -->
    <center>
-      <VBox spacing="10">
+      <VBox spacing="20">
          <padding>
             <Insets bottom="15" left="15" right="15" top="15" />
          </padding>
          <children>
 
-            <!-- Header area -->
-            <HBox alignment="CENTER_LEFT" spacing="10">
+            <!-- Archivos originales -->
+            <VBox spacing="10" style="-fx-background-color: #F7F9FB; -fx-padding: 10; -fx-border-color: #BFCAEA; -fx-border-radius: 5;">
                <children>
-                  <Label style="-fx-font-weight: bold;" text="Archivos cargados:" />
-                  <Button fx:id="btnRefresh" text="Actualizar" />
-                  <Button fx:id="btnOpen" text="Abrir ubicación" />
-               </children>
-            </HBox>
+                  <HBox alignment="CENTER_LEFT" spacing="10">
+                     <children>
+                        <Label style="-fx-font-weight: bold;" text="Archivos cargados (originales):" />
+                        <Button fx:id="btnRefreshOriginals" text="Actualizar" />
+                        <Button fx:id="btnOpenOriginals" text="Abrir carpeta" />
+                     </children>
+                  </HBox>
 
-            <!-- Table view of files -->
-            <TableView fx:id="fileTable" prefHeight="500">
-               <columns>
-                  <TableColumn fx:id="nameColumn" prefWidth="280" text="Nombre" />
-                  <TableColumn fx:id="sizeColumn" prefWidth="120" text="Tamaño (KB)" />
-                  <TableColumn fx:id="typeColumn" prefWidth="120" text="Tipo" />
-                  <TableColumn fx:id="dateColumn" prefWidth="220" text="Última modificación" />
-               </columns>
-            </TableView>
+                  <TableView fx:id="originalFilesTable" prefHeight="220">
+                     <columns>
+                        <TableColumn fx:id="nameColOriginal" prefWidth="250" text="Nombre" />
+                        <TableColumn fx:id="sizeColOriginal" prefWidth="100" text="Tamaño (KB)" />
+                        <TableColumn fx:id="typeColOriginal" prefWidth="100" text="Tipo" />
+                        <TableColumn fx:id="dateColOriginal" prefWidth="200" text="Última modificación" />
+                     </columns>
+                  </TableView>
+               </children>
+            </VBox>
+
+            <!-- Archivos procesados -->
+            <VBox spacing="10" style="-fx-background-color: #F7F9FB; -fx-padding: 10; -fx-border-color: #BFCAEA; -fx-border-radius: 5;">
+               <children>
+                  <HBox alignment="CENTER_LEFT" spacing="10">
+                     <children>
+                        <Label style="-fx-font-weight: bold;" text="Archivos procesados (comprimidos/encriptados):" />
+                        <Button fx:id="btnRefreshProcessed" text="Actualizar" />
+                        <Button fx:id="btnOpenProcessed" text="Abrir carpeta" />
+                     </children>
+                  </HBox>
+
+                  <TableView fx:id="processedFilesTable" prefHeight="220">
+                     <columns>
+                        <TableColumn fx:id="nameColProcessed" prefWidth="250" text="Nombre" />
+                        <TableColumn fx:id="sizeColProcessed" prefWidth="100" text="Tamaño (KB)" />
+                        <TableColumn fx:id="typeColProcessed" prefWidth="100" text="Tipo" />
+                        <TableColumn fx:id="dateColProcessed" prefWidth="200" text="Última modificación" />
+                     </columns>
+                  </TableView>
+               </children>
+            </VBox>
 
          </children>
       </VBox>

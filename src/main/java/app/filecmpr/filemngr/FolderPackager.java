@@ -1,100 +1,70 @@
 package app.filecmpr.filemngr;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.*;
+import java.util.Objects;
 
-/**
- * FolderPackager:
- * Combina múltiples archivos .txt en uno solo usando un delimitador Unicode invisible
- * y permite restaurarlos luego a una carpeta.
- *
- * Todos los archivos temporales se guardan en app_data/tmp/
- */
 public class FolderPackager {
 
-    private static final char SEP = '\u001F'; // delimitador invisible (U+001F)
-    private static final String EXT_MERGED = "_merged.txt";
-    private static final Path TMP_DIR = Paths.get("app_data", "tmp");
+    private static final String TMP_DIR = "app_data/tmp";
 
-    /**
-     * Combina todos los .txt de una carpeta en un único archivo temporal oculto.
-     * @param folder Carpeta con archivos .txt
-     * @return Archivo combinado generado en app_data/tmp/
-     * @throws IOException si hay errores de lectura o escritura
-     */
+    /** Une los .txt de una carpeta en un solo archivo temporal */
     public static File mergeFolder(File folder) throws IOException {
-        if (!folder.isDirectory())
-            throw new IllegalArgumentException("No es una carpeta: " + folder.getPath());
+        File tmpDir = new File(TMP_DIR);
+        if (!tmpDir.exists()) tmpDir.mkdirs();
 
-        // Crear carpeta temporal si no existe
-        if (!Files.exists(TMP_DIR)) {
-            Files.createDirectories(TMP_DIR);
-        }
+        File mergedFile = new File(tmpDir, folder.getName() + "_merged.txt");
 
-        File merged = TMP_DIR.resolve(folder.getName() + EXT_MERGED).toFile();
+        try (BufferedWriter writer = Files.newBufferedWriter(mergedFile.toPath())) {
+            File[] files = folder.listFiles((d, n) -> n.toLowerCase().endsWith(".txt"));
+            if (files == null || files.length == 0)
+                throw new IOException("La carpeta no contiene archivos .txt");
 
-        try (BufferedWriter bw = Files.newBufferedWriter(merged.toPath(), StandardCharsets.UTF_8)) {
-            File[] archivos = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
-            if (archivos == null || archivos.length == 0)
-                throw new IOException("No se encontraron archivos .txt en: " + folder.getPath());
-
-            for (File f : archivos) {
-                bw.write(f.getName());
-                bw.write(SEP);
-                bw.write(Files.readString(f.toPath(), StandardCharsets.UTF_8));
-                bw.write(SEP);
+            for (File f : files) {
+                writer.write("=== " + f.getName() + " ===");
+                writer.newLine();
+                Files.lines(f.toPath()).forEach(line -> {
+                    try {
+                        writer.write(line);
+                        writer.newLine();
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                });
+                writer.newLine();
             }
         }
 
-        System.out.println("[FolderPackager] Carpeta empaquetada en: " + merged.getAbsolutePath());
-        return merged;
+        return mergedFile;
     }
 
-    /**
-     * Divide un archivo combinado en los archivos originales dentro de la carpeta destino.
-     * @param mergedFile Archivo combinado (_merged.txt)
-     * @param outputDir Carpeta donde se restaurarán los archivos
-     * @throws IOException si ocurre un error de lectura o escritura
-     */
-    public static void splitMerged(File mergedFile, File outputDir) throws IOException {
-        if (!mergedFile.exists())
-            throw new FileNotFoundException("Archivo no encontrado: " + mergedFile.getPath());
+    /** Revierte el merge: reconstruye la carpeta original desde el archivo combinado */
+    public static File unmergeFolder(File mergedFile) throws IOException {
+        File tmpDir = new File(TMP_DIR);
+        if (!tmpDir.exists()) tmpDir.mkdirs();
 
-        if (!outputDir.exists())
-            Files.createDirectories(outputDir.toPath());
+        String baseName = mergedFile.getName().replace("_decoded.txt", "").replace("_merged.txt", "");
+        File outDir = new File(tmpDir, baseName + "_restored");
+        outDir.mkdirs();
 
-        String data = Files.readString(mergedFile.toPath(), StandardCharsets.UTF_8);
-        String[] parts = data.split(String.valueOf(SEP));
+        try (BufferedReader reader = Files.newBufferedReader(mergedFile.toPath())) {
+            String line;
+            BufferedWriter current = null;
 
-        for (int i = 0; i < parts.length - 1; i += 2) {
-            String name = parts[i].trim();
-            String content = parts[i + 1];
-            Path out = outputDir.toPath().resolve(name);
-            Files.writeString(out, content, StandardCharsets.UTF_8);
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("=== ") && line.endsWith(" ===")) {
+                    if (current != null) current.close();
+                    String fileName = line.substring(4, line.length() - 4).trim();
+                    current = Files.newBufferedWriter(new File(outDir, fileName).toPath());
+                } else if (current != null) {
+                    current.write(line);
+                    current.newLine();
+                }
+            }
+
+            if (current != null) current.close();
         }
 
-        System.out.println("[FolderPackager] Archivos restaurados en: " + outputDir.getAbsolutePath());
-    }
-
-    /**
-     * Limpia todos los archivos temporales creados en app_data/tmp/
-     * (Se puede llamar al finalizar la aplicación o tras cada proceso)
-     */
-    public static void clearTemp() {
-        try {
-            if (!Files.exists(TMP_DIR)) return;
-            Files.walk(TMP_DIR)
-                    .filter(Files::isRegularFile)
-                    .forEach(path -> {
-                        try {
-                            Files.deleteIfExists(path);
-                        } catch (IOException ignored) {}
-                    });
-            System.out.println("[FolderPackager] Carpeta temporal limpia.");
-        } catch (IOException e) {
-            System.err.println("[FolderPackager] Error al limpiar temporales: " + e.getMessage());
-        }
+        return outDir;
     }
 }

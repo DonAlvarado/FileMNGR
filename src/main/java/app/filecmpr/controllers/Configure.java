@@ -9,14 +9,16 @@ import javafx.scene.Node;
 import javafx.event.ActionEvent;
 
 import java.io.*;
-import java.util.Properties;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Arrays;
+import java.nio.file.*;
+import java.util.*;
 
-// imports omitidos
+import app.filecmpr.compression.CompressionFactory;
+import app.filecmpr.compression.Compressor;
+import app.filecmpr.filemngr.FolderPackager;
+import app.filecmpr.utils.AppState;
 
 public class Configure {
+
     @FXML private RadioButton radioArchivo;
     @FXML private RadioButton radioCarpeta;
     @FXML private ToggleGroup tipoGroup;
@@ -31,9 +33,8 @@ public class Configure {
     private final Properties props = new Properties();
     private static final String CONFIG_PATH = "config.properties";
 
-    // Estado real seleccionado
-    private File selectedFile = null;      // si el modo es Archivo
-    private File selectedFolder = null;    // si el modo es Carpeta
+    private File selectedFile = null;
+    private File selectedFolder = null;
 
     @FXML
     public void initialize() {
@@ -43,20 +44,27 @@ public class Configure {
                 "Comprimir", "Comprimir y Encriptar", "Solo Encriptar",
                 "Descomprimir", "Descomprimir y Desencriptar"
         );
-        compressionChoice.getItems().setAll("LZ77", "Huffman", "LZ + Huffman");
+
+        // ======== CAMBIO: Cargar dinámicamente desde CompressionFactory ========
+        Set<String> algorithms = CompressionFactory.getAlgorithmNames();
+        if (algorithms == null || algorithms.isEmpty()) {
+            // fallback por si la fábrica está vacía
+            compressionChoice.getItems().setAll("LZ77", "Huffman", "LZ + Huffman");
+        } else {
+            compressionChoice.getItems().setAll(algorithms);
+        }
+        // ======================================================================
 
         operationChoice.setValue(props.getProperty("operation", "Comprimir"));
-        compressionChoice.setValue(props.getProperty("algorithm", "LZ77"));
+        compressionChoice.setValue(props.getProperty("algorithm",
+                compressionChoice.getItems().isEmpty() ? "LZ77" : compressionChoice.getItems().get(0)));
         passwordField.setText(props.getProperty("password", ""));
 
-        // Restaurar tipo Archivo/Carpeta
-        if ("carpeta".equalsIgnoreCase(props.getProperty("pathType", "archivo"))) {
+        if ("carpeta".equalsIgnoreCase(props.getProperty("pathType", "archivo")))
             radioCarpeta.setSelected(true);
-        } else {
+        else
             radioArchivo.setSelected(true);
-        }
 
-        // Listener para actualizar estado visible
         tipoGroup.selectedToggleProperty().addListener((obs, a, b) -> {
             selectedFile = null;
             selectedFolder = null;
@@ -83,9 +91,7 @@ public class Configure {
     private void updateStatus() {
         String mode = operationChoice.getValue();
         String tipo = radioCarpeta.isSelected() ? "Carpeta" : "Archivo";
-        statusLabel.setText(
-                (mode == null ? "Modo: Ninguno" : "Modo: " + mode) + " | Tipo: " + tipo
-        );
+        statusLabel.setText((mode == null ? "Modo: Ninguno" : "Modo: " + mode) + " | Tipo: " + tipo);
     }
 
     private void saveConfig() {
@@ -111,68 +117,179 @@ public class Configure {
         selectedFile = null;
         selectedFolder = null;
 
-        if (radioCarpeta.isSelected()) {
-            DirectoryChooser dirChooser = new DirectoryChooser();
-            dirChooser.setTitle("Seleccionar carpeta");
-            File folder = dirChooser.showDialog(stage);
-            if (folder != null) {
-                selectedFolder = folder; // GUARDA LA RUTA REAL
-                // Muestra solo nombres bonitos
-                String[] names = Optional.ofNullable(folder.listFiles((d,n)->n.toLowerCase().endsWith(".txt")))
-                        .orElse(new File[0])
-                        .length == 0
-                        ? new String[]{"(Carpeta sin .txt)"}
-                        : Arrays.stream(Objects.requireNonNull(
-                                folder.listFiles((d,n)->n.toLowerCase().endsWith(".txt"))))
-                        .map(File::getName).toArray(String[]::new);
+        String mode = operationChoice.getValue();
 
-                fileList.getItems().add("[Carpeta] " + folder.getName());
-                fileList.getItems().addAll(names);
-                statusLabel.setText("Carpeta seleccionada: " + folder.getAbsolutePath());
-                props.setProperty("pathType", "carpeta");
-                saveConfig();
-            } else {
-                statusLabel.setText("No se seleccionó carpeta.");
+        // === Caso: Carpeta seleccionada ===
+        if (radioCarpeta.isSelected()) {
+            // Si estamos en modo descomprimir, pedimos el archivo .cmp (la "carpeta comprimida")
+            if (mode != null && mode.contains("Descomprimir")) {
+                FileChooser fc = new FileChooser();
+                fc.setTitle("Seleccionar carpeta comprimida (.cmp)");
+                fc.getExtensionFilters().add(
+                        new FileChooser.ExtensionFilter("Archivos comprimidos", "*.cmp")
+                );
+                fc.getExtensionFilters().add(
+                        new FileChooser.ExtensionFilter("Todos los archivos", "*.*")
+                );
+
+                File cmpFile = fc.showOpenDialog(stage);
+                if (cmpFile != null) {
+                    selectedFolder = cmpFile; // tratamos el archivo .cmp como una "carpeta comprimida"
+                    fileList.getItems().add(cmpFile.getName());
+                    statusLabel.setText("Carpeta comprimida seleccionada: " + cmpFile.getAbsolutePath());
+                } else {
+                    statusLabel.setText("No se seleccionó ningún archivo comprimido.");
+                }
             }
-        } else {
+            // Si estamos en modo comprimir, pedimos una carpeta normal
+            else {
+                DirectoryChooser dirChooser = new DirectoryChooser();
+                dirChooser.setTitle("Seleccionar carpeta");
+                File folder = dirChooser.showDialog(stage);
+                if (folder != null) {
+                    selectedFolder = folder;
+                    fileList.getItems().add("[Carpeta] " + folder.getName());
+
+                    File[] txtFiles = folder.listFiles((d, n) -> n.toLowerCase().endsWith(".txt"));
+                    if (txtFiles != null && txtFiles.length > 0) {
+                        Arrays.stream(txtFiles).forEach(f -> fileList.getItems().add(f.getName()));
+                    } else {
+                        fileList.getItems().add("(Carpeta vacía o sin .txt)");
+                    }
+
+                    statusLabel.setText("Carpeta seleccionada: " + folder.getAbsolutePath());
+                } else {
+                    statusLabel.setText("No se seleccionó ninguna carpeta.");
+                }
+            }
+        }
+
+        // === Caso: Archivo individual ===
+        else {
             FileChooser fc = new FileChooser();
             fc.setTitle("Seleccionar archivo");
-            fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos de texto", "*.txt"));
+
+            // Cambiamos los filtros según el modo actual
+            if (mode != null && mode.contains("Descomprimir")) {
+                fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos comprimidos", "*.cmp"));
+            } else {
+                fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos de texto", "*.txt"));
+            }
+            fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Todos los archivos", "*.*"));
+
             File f = fc.showOpenDialog(stage);
             if (f != null) {
-                selectedFile = f; // GUARDA LA RUTA REAL
+                selectedFile = f;
                 fileList.getItems().add(f.getName());
                 statusLabel.setText("Archivo seleccionado: " + f.getAbsolutePath());
-                props.setProperty("pathType", "archivo");
-                saveConfig();
             } else {
-                statusLabel.setText("No se seleccionó archivo.");
+                statusLabel.setText("No se seleccionó ningún archivo.");
             }
         }
     }
 
     @FXML
     private void handleProcess(ActionEvent event) {
-        // Ahorita SOLO manejo de carpetas/archivos. Nada de compresión aún.
-        if (radioCarpeta.isSelected()) {
-            if (selectedFolder == null) {
-                statusLabel.setText("Selecciona una carpeta primero.");
-                return;
+        String operation = operationChoice.getValue();
+        String algorithm = compressionChoice.getValue();
+
+        try {
+            if (radioCarpeta.isSelected()) {
+                if (selectedFolder == null) {
+                    statusLabel.setText("Selecciona una carpeta primero.");
+                    return;
+                }
+                processFolder(selectedFolder, operation, algorithm);
+            } else {
+                if (selectedFile == null) {
+                    statusLabel.setText("Selecciona un archivo primero.");
+                    return;
+                }
+                processFile(selectedFile, operation, algorithm);
             }
-            try {
-                // Solo probamos el empaquetado por ahora
-                File merged = app.filecmpr.filemngr.FolderPackager.mergeFolder(selectedFolder);
-                statusLabel.setText("Empaquetada en: " + merged.getAbsolutePath());
-            } catch (Exception e) {
-                e.printStackTrace();
-                statusLabel.setText("Error empaquetando carpeta: " + e.getMessage());
-            }
-        } else {
-            if (selectedFile == null) {
-                statusLabel.setText("Selecciona un archivo primero.");
-                return;
-            }
-            statusLabel.setText("Archivo listo: " + selectedFile.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+            statusLabel.setText("Error procesando: " + e.getMessage());
         }
+    }
+
+    private void processFile(File file, String operation, String algorithm) throws IOException {
+        Compressor comp = CompressionFactory.get(algorithm);
+        if (comp == null) {
+            statusLabel.setText("Algoritmo no soportado: " + algorithm);
+            return;
+        }
+
+        byte[] inputData = Files.readAllBytes(file.toPath());
+        byte[] outputData;
+        String outputExt = operation.contains("Descomprimir") ? "_dec.txt" : ".cmp";
+        long start = System.currentTimeMillis();
+
+        if (operation.contains("Comprimir")) {
+            outputData = comp.compress(inputData);
+        } else if (operation.contains("Descomprimir")) {
+            outputData = comp.decompress(inputData);
+        } else {
+            statusLabel.setText("Operación no implementada: " + operation);
+            return;
+        }
+
+        long time = System.currentTimeMillis() - start;
+
+        File tmpDir = new File("app_data/tmp");
+        if (!tmpDir.exists()) tmpDir.mkdirs();
+
+        File tempOriginal = new File(tmpDir, file.getName());
+        Files.copy(file.toPath(), tempOriginal.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        File outFile = new File(tmpDir, file.getName().replaceFirst("\\.[^.]+$", "") + outputExt);
+        Files.write(outFile.toPath(), outputData);
+
+        AppState.lastOriginal = tempOriginal;
+        AppState.lastProcessed = outFile;
+        AppState.lastTime = time;
+
+        statusLabel.setText("Archivo procesado con " + comp.getName() + " en " + time + " ms");
+    }
+
+    private void processFolder(File folder, String operation, String algorithm) throws IOException {
+        Compressor comp = CompressionFactory.get(algorithm);
+        if (comp == null) {
+            statusLabel.setText("Algoritmo no soportado: " + algorithm);
+            return;
+        }
+
+        File tmpDir = new File("app_data/tmp");
+        if (!tmpDir.exists()) tmpDir.mkdirs();
+
+        long start = System.currentTimeMillis();
+        File result;
+
+        if (operation.contains("Comprimir")) {
+            File mergedFile = FolderPackager.mergeFolder(folder);
+            byte[] inputData = Files.readAllBytes(mergedFile.toPath());
+            byte[] compressed = comp.compress(inputData);
+            File cmpFile = new File(tmpDir, folder.getName() + "_compressed.cmp");
+            Files.write(cmpFile.toPath(), compressed);
+            result = cmpFile;
+            AppState.lastOriginal = mergedFile;
+            AppState.lastProcessed = cmpFile;
+        } else if (operation.contains("Descomprimir")) {
+            byte[] inputData = Files.readAllBytes(folder.toPath()); // carpeta = archivo .cmp aquí
+            byte[] decoded = comp.decompress(inputData);
+            File decodedFile = new File(tmpDir, folder.getName().replace(".cmp", "_decoded.txt"));
+            Files.write(decodedFile.toPath(), decoded);
+            File restoredDir = FolderPackager.unmergeFolder(decodedFile);
+            result = restoredDir;
+            AppState.lastOriginal = folder;
+            AppState.lastProcessed = restoredDir;
+        } else {
+            statusLabel.setText("Operación no implementada para carpetas: " + operation);
+            return;
+        }
+
+        long total = System.currentTimeMillis() - start;
+        AppState.lastTime = total;
+        statusLabel.setText("Carpeta procesada con " + comp.getName() + " en " + total + " ms.");
     }
 }
