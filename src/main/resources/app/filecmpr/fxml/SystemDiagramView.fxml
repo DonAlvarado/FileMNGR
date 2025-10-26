@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
+
+<BorderPane prefHeight="600.0" prefWidth="785.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.filecmpr.controllers.SystemView">
+
+   <!-- ======= ENCABEZADO ======= -->
+   <top>
+      <AnchorPane prefHeight="40.0" style="-fx-background-color: #BFCAEA;" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="6.0" spacing="8">
+               <children>
+                  <ImageView fitHeight="28" fitWidth="28" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/DiagramIcon.png" />
+                     </image>
+                  </ImageView>
+                  <Label text="System Diagram" textFill="WHITE">
+                     <font>
+                        <Font name="Verdana Bold" size="18" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </top>
+
+   <!-- ======= PIE DE PÁGINA ======= -->
+   <bottom>
+      <AnchorPane prefHeight="40.0" style="-fx-background-color: #BFCAEA;" BorderPane.alignment="CENTER" />
+   </bottom>
+
+   <!-- ======= CONTENIDO PRINCIPAL ======= -->
+   <center>
+      <AnchorPane BorderPane.alignment="CENTER">
+         <children>
+            <!-- WebView para mostrar el SVG animado -->
+            <WebView fx:id="svgViewer" style="-fx-border-color: #E0E0E0; -fx-border-radius: 6; -fx-background-color: white;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>

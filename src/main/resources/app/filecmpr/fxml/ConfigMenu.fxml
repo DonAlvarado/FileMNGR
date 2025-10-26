@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="600" prefWidth="785" xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="app.filecmpr.controllers.Configure">
+
+   <!-- TOP BAR -->
+   <top>
+      <AnchorPane prefHeight="40" style="-fx-background-color: #BFCAEA;" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="6.0" spacing="8">
+               <children>
+                  <ImageView fitHeight="28" fitWidth="28" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/ConfigLogo.png" />
+                     </image>
+                  </ImageView>
+                  <Label text="Configure">
+                     <font>
+                        <Font name="Verdana Bold" size="18" />
+                     </font>
+                     <textFill>WHITE</textFill>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </top>
+
+   <!-- BOTTOM BAR -->
+   <bottom>
+      <AnchorPane prefHeight="30" style="-fx-background-color: #BFCAEA;" BorderPane.alignment="CENTER">
+         <children>
+            <Label layoutX="355" layoutY="8" text="AA (2025)." textFill="WHITE">
+               <font>
+                  <Font name="Verdana Italic" size="10" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </bottom>
+
+   <!-- MAIN CONTENT -->
+   <center>
+      <VBox alignment="TOP_CENTER" spacing="15">
+         <padding>
+            <Insets bottom="20" left="20" right="20" top="20" />
+         </padding>
+         <children>
+
+            <!-- Operation selector -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+               <children>
+                  <Label text="Operación:" />
+                  <ChoiceBox fx:id="operationChoice" prefWidth="250" />
+                  <Button fx:id="btnProcess" onAction="#handleProcess" text="Procesar" />
+               </children>
+            </HBox>
+
+            <Separator />
+
+            <!-- Split area -->
+            <SplitPane dividerPositions="0.4">
+               <items>
+
+                  <VBox spacing="10">
+                     <padding>
+                        <Insets bottom="10" left="10" right="10" top="10" />
+                     </padding>
+                     <children>
+
+                        <!-- Definición del grupo -->
+                        <fx:define>
+                           <ToggleGroup fx:id="tipoGroup" />
+                        </fx:define>
+
+                        <!-- Tipo selector -->
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                           <Label text="Tipo:" />
+                           <RadioButton fx:id="radioArchivo" text="Archivo" toggleGroup="${tipoGroup}" selected="true" />
+                           <RadioButton fx:id="radioCarpeta" text="Carpeta" toggleGroup="${tipoGroup}" />
+                        </HBox>
+
+                        <!-- Botón Seleccionar -->
+                        <HBox spacing="8">
+                           <Button fx:id="btnUpload" onAction="#handleUpload" text="Seleccionar Archivo/Carpeta" />
+                        </HBox>
+
+                        <!-- Lista de archivos -->
+                        <ListView fx:id="fileList" prefHeight="400" />
+                     </children>
+                  </VBox>
+
+
+                  <!-- RIGHT PANEL -->
+                  <VBox spacing="15">
+                     <padding>
+                        <Insets bottom="10" left="10" right="10" top="10" />
+                     </padding>
+                     <children>
+                        <Label style="-fx-font-weight: bold;" text="Configuración de Procesamiento:" />
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                           <Label text="Compresión:" />
+                           <ChoiceBox fx:id="compressionChoice" prefWidth="180" />
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                           <Label text="Contraseña:" />
+                           <PasswordField fx:id="passwordField" prefWidth="180" />
+                        </HBox>
+                        <Separator />
+                        <Label fx:id="statusLabel" text="Modo: Ninguno seleccionado." textFill="#555" />
+                     </children>
+                  </VBox>
+               </items>
+            </SplitPane>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

@@ -1,0 +1,85 @@
+# =============================
+# Maven / Build
+# =============================
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# =============================
+# IDE: IntelliJ IDEA
+# =============================
+.idea/
+*.iws
+*.iml
+*.ipr
+# (mantiene configuración del proyecto local, pero ignora metadatos automáticos)
+.idea/modules.xml
+.idea/jarRepositories.xml
+.idea/compiler.xml
+.idea/libraries/
+
+# =============================
+# IDE: Eclipse
+# =============================
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+
+# =============================
+# IDE: NetBeans
+# =============================
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# =============================
+# VS Code
+# =============================
+.vscode/
+
+# =============================
+# Sistema Operativo
+# =============================
+.DS_Store
+Thumbs.db
+
+# =============================
+# Archivos temporales de la app
+# =============================
+
+# Carpeta de empaquetado temporal
+app_data/
+# o, si prefieres solo la subcarpeta:
+# app_data/tmp/
+
+# =============================
+# Configuración local del usuario
+# =============================
+config.properties
+
+# =============================
+# Archivos de logs o salida
+# =============================
+*.log
+*.tmp
+*.bak
+*.swp
+
+# =============================
+# Archivos generados en runtime
+# =============================
+*.merged.txt
+*_merged.txt
+*_cmp.txt
+*_dec.txt
+*_enc.txt
