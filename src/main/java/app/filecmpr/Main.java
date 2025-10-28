@@ -4,6 +4,7 @@ import app.filecmpr.controllers.Configure;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -16,6 +17,13 @@ public class Main extends Application {
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("FileCMPR");
         stage.setScene(scene);
+
+        // Agregar icono de la aplicación
+        stage.getIcons().add(
+                new Image(getClass().getResourceAsStream("/app/filecmpr/images/appIcon.png"))
+        );
+
+
         stage.show();
     }
 
