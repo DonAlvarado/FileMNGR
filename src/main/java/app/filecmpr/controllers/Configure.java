@@ -49,7 +49,7 @@ public class Configure {
         Set<String> algorithms = CompressionFactory.getAlgorithmNames();
         if (algorithms == null || algorithms.isEmpty()) {
             // fallback por si la fábrica está vacía
-            compressionChoice.getItems().setAll("LZ77", "Huffman", "LZ + Huffman");
+            compressionChoice.getItems().setAll("Vacio");
         } else {
             compressionChoice.getItems().setAll(algorithms);
         }

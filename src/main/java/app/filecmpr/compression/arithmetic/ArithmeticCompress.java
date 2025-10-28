@@ -7,23 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Codificación aritmética con renormalización (E1/E2/E3) trabajando a nivel de bits.
- * Adaptado para la interfaz Compressor del proyecto.
- *
- * Formato de salida:
- *  MAGIC "ARI2"
- *  int K_BITS
- *  int alphabetCount
- *    (byte symbol, int freq) * alphabetCount
- *  int originalLen
- *  int bitstreamLenBytes
- *  byte[bitstreamLenBytes] bitstream
- */
 public class ArithmeticCompress implements Compressor {
 
     private static final byte[] MAGIC = new byte[]{'A','R','I','2'};
-    private static final int K_BITS = 24; // precisión del rango: 2^K_BITS
+    private static final int K_BITS = 24;
     private static final int R = 1 << K_BITS;
     private static final int HALF = R >>> 1;
     private static final int FIRST_QTR = R >>> 2;
@@ -156,7 +143,6 @@ public class ArithmeticCompress implements Compressor {
         }
         int k = buf.getInt();
         if (k != K_BITS) {
-            // Para mantener simple exigimos el mismo K_BITS
             throw new IllegalArgumentException("K_BITS incompatible: " + k + " != " + K_BITS);
         }
 
@@ -214,7 +200,6 @@ public class ArithmeticCompress implements Compressor {
             // renormalización
             while (true) {
                 if (high < HALF) {
-                    // no-op
                 } else if (low >= HALF) {
                     low -= HALF; high -= HALF; value -= HALF;
                 } else if (low >= FIRST_QTR && high < THIRD_QTR) {
@@ -235,7 +220,6 @@ public class ArithmeticCompress implements Compressor {
     }
 
     private static int findSymbol(int[] cum, int t) {
-        // cum tiene longitud N+1; encontrar i tal que cum[i] <= t < cum[i+1]
         int lo = 0, hi = cum.length - 2;
         while (lo <= hi) {
             int mid = (lo + hi) >>> 1;
@@ -279,10 +263,10 @@ public class ArithmeticCompress implements Compressor {
     private static final class BitReader {
         private final byte[] data;
         private int bytePos = 0;
-        private int bitPos = 0; // 0..7, de MSB a LSB
+        private int bitPos = 0;
         BitReader(byte[] data) { this.data = data; }
         int readBit() {
-            if (bytePos >= data.length) return 0; // padding de seguridad
+            if (bytePos >= data.length) return 0;
             int current = data[bytePos] & 0xFF;
             int bit = (current >> (7 - bitPos)) & 1;
             bitPos++;

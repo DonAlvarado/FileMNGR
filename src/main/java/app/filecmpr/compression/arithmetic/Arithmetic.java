@@ -2,10 +2,6 @@ package app.filecmpr.compression.arithmetic;
 
 import app.filecmpr.compression.Compressor;
 
-/**
- * Fachada opcional para quienes esperaban "Arithmetic" como nombre público.
- * Delegamos toda la lógica a ArithmeticCompress que ya usa la fábrica.
- */
 public class Arithmetic implements Compressor {
 
     private final ArithmeticCompress delegate = new ArithmeticCompress();
