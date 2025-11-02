@@ -2,122 +2,120 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<BorderPane prefHeight="600" prefWidth="785" xmlns="http://javafx.com/javafx/25"
+
+<BorderPane prefHeight="600" prefWidth="785"
+            xmlns="http://javafx.com/javafx/25"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="app.filecmpr.controllers.Configure">
+            fx:controller="app.filecmpr.controllers.Configure"
+            stylesheets="@../styles/appTheme.css"
+            style="-fx-background-color: #F8FAFD;">
 
    <!-- TOP BAR -->
    <top>
-      <AnchorPane prefHeight="40" style="-fx-background-color: #BFCAEA;" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="45"
+                  style="-fx-background-color: linear-gradient(to right, #006FF7, #6DAEF9);
+                       -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 3);"
+                  BorderPane.alignment="CENTER">
          <children>
-            <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="6.0" spacing="8">
+            <HBox alignment="CENTER_LEFT" layoutX="18.0" layoutY="8.0" spacing="10">
                <children>
-                  <ImageView fitHeight="28" fitWidth="28" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/ConfigLogo.png" />
-                     </image>
-                  </ImageView>
-                  <Label text="Configure">
-                     <font>
-                        <Font name="Verdana Bold" size="18" />
-                     </font>
-                     <textFill>WHITE</textFill>
-                  </Label>
+                  <FontIcon iconLiteral="fa-cog" iconSize="20" iconColor="white"/>
+                  <Label text="Configure"
+                         style="-fx-text-fill: white; -fx-font-size: 17px; -fx-font-weight: bold;"/>
                </children>
             </HBox>
          </children>
       </AnchorPane>
    </top>
 
+
    <!-- BOTTOM BAR -->
    <bottom>
-      <AnchorPane prefHeight="30" style="-fx-background-color: #BFCAEA;" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="30"
+                  style="-fx-background-color: #E9F0FB;
+                         -fx-border-color: #D0DAEB transparent transparent transparent;"
+                  BorderPane.alignment="CENTER">
          <children>
-            <Label layoutX="355" layoutY="8" text="AA (2025)." textFill="WHITE">
-               <font>
-                  <Font name="Verdana Italic" size="10" />
-               </font>
-            </Label>
+            <Label layoutX="355" layoutY="8" text="AA (2025)."
+                   style="-fx-text-fill: #8A96A8; -fx-font-style: italic; -fx-font-size: 11px;" />
          </children>
       </AnchorPane>
    </bottom>
 
    <!-- MAIN CONTENT -->
    <center>
-      <VBox alignment="TOP_CENTER" spacing="15">
+      <VBox alignment="TOP_CENTER" spacing="20">
          <padding>
-            <Insets bottom="20" left="20" right="20" top="20" />
+            <Insets top="25" left="25" right="25" bottom="25"/>
          </padding>
          <children>
 
             <!-- Operation selector -->
             <HBox alignment="CENTER_LEFT" spacing="10">
-               <children>
-                  <Label text="Operación:" />
-                  <ChoiceBox fx:id="operationChoice" prefWidth="250" />
-                  <Button fx:id="btnProcess" onAction="#handleProcess" text="Procesar" />
-               </children>
+               <Label text="Operación:" style="-fx-font-weight: 600;"/>
+               <ChoiceBox fx:id="operationChoice" prefWidth="220"/>
+               <Button fx:id="btnProcess" onAction="#handleProcess" text="Procesar" styleClass="button main"/>
             </HBox>
 
-            <Separator />
+            <Separator/>
 
-            <!-- Split area -->
-            <SplitPane dividerPositions="0.4">
+            <!-- SPLIT AREA -->
+            <SplitPane dividerPositions="0.4" style="-fx-background-color: transparent;">
                <items>
 
-                  <VBox spacing="10">
+                  <!-- LEFT PANEL -->
+                  <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 4);">
                      <padding>
-                        <Insets bottom="10" left="10" right="10" top="10" />
+                        <Insets top="15" left="15" right="15" bottom="15"/>
                      </padding>
                      <children>
 
-                        <!-- Definición del grupo -->
                         <fx:define>
-                           <ToggleGroup fx:id="tipoGroup" />
+                           <ToggleGroup fx:id="tipoGroup"/>
                         </fx:define>
 
-                        <!-- Tipo selector -->
                         <HBox spacing="10" alignment="CENTER_LEFT">
-                           <Label text="Tipo:" />
-                           <RadioButton fx:id="radioArchivo" text="Archivo" toggleGroup="${tipoGroup}" selected="true" />
-                           <RadioButton fx:id="radioCarpeta" text="Carpeta" toggleGroup="${tipoGroup}" />
+                           <Label text="Tipo:" style="-fx-font-weight: 600;"/>
+                           <RadioButton fx:id="radioArchivo" text="Archivo" toggleGroup="${tipoGroup}" selected="true"/>
+                           <RadioButton fx:id="radioCarpeta" text="Carpeta" toggleGroup="${tipoGroup}"/>
                         </HBox>
 
-                        <!-- Botón Seleccionar -->
-                        <HBox spacing="8">
-                           <Button fx:id="btnUpload" onAction="#handleUpload" text="Seleccionar Archivo/Carpeta" />
-                        </HBox>
+                        <Button fx:id="btnUpload" onAction="#handleUpload" text="Seleccionar Archivo/Carpeta"
+                                styleClass="button main" prefWidth="220"/>
 
-                        <!-- Lista de archivos -->
-                        <ListView fx:id="fileList" prefHeight="400" />
+                        <ListView fx:id="fileList"
+                                  style="-fx-background-color: #F3F6FB; -fx-background-radius: 10;"
+                                  prefHeight="350"/>
                      </children>
                   </VBox>
-
 
                   <!-- RIGHT PANEL -->
-                  <VBox spacing="15">
+                  <VBox spacing="12" style="-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 4);">
                      <padding>
-                        <Insets bottom="10" left="10" right="10" top="10" />
+                        <Insets top="15" left="15" right="15" bottom="15"/>
                      </padding>
                      <children>
-                        <Label style="-fx-font-weight: bold;" text="Configuración de Procesamiento:" />
+                        <Label text="Configuración de Procesamiento:"
+                               style="-fx-font-weight: 700; -fx-text-fill: #1E2432; -fx-font-size: 14px;"/>
                         <HBox alignment="CENTER_LEFT" spacing="10">
-                           <Label text="Compresión:" />
-                           <ChoiceBox fx:id="compressionChoice" prefWidth="180" />
+                           <Label text="Compresión:" style="-fx-font-weight: 600;"/>
+                           <ChoiceBox fx:id="compressionChoice" prefWidth="180"/>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="10">
-                           <Label text="Contraseña:" />
-                           <PasswordField fx:id="passwordField" prefWidth="180" />
+                           <Label text="Contraseña:" style="-fx-font-weight: 600;"/>
+                           <PasswordField fx:id="passwordField" prefWidth="180"/>
                         </HBox>
-                        <Separator />
-                        <Label fx:id="statusLabel" text="Modo: Ninguno seleccionado." textFill="#555" />
+                        <Separator/>
+                        <Label fx:id="statusLabel"
+                               text="Modo: Ninguno seleccionado."
+                               style="-fx-text-fill: #64748B; -fx-font-size: 12px;"/>
                      </children>
                   </VBox>
+
                </items>
             </SplitPane>
          </children>

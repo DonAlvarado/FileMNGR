@@ -137,6 +137,24 @@
     -fx-text-fill: white;
 }
 
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1E2432;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 0 0 12;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-spacing: 8;
+}
+.sidebar-button:hover {
+    -fx-background-color: rgba(0,111,247,0.08);
+}
+.sidebar-button:focused, .sidebar-button:armed {
+    -fx-background-color: rgba(0,111,247,0.15);
+}
+
 /* === BORDERPANES / ANCHORPANES === */
 .anchor-pane, .border-pane, .vbox, .hbox {
     -fx-background-color: transparent;
@@ -184,21 +202,76 @@
     -fx-font-size: 11px;
 }
 
-/* === SPLASH / BOOT WINDOW === */
-.boot-title {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #006FF7;
-}
-.boot-subtitle {
-    -fx-text-fill: #64748B;
-    -fx-font-size: 13px;
+/* Splash refinado */
+.boot-bg {
+    -fx-background-color: linear-gradient(to bottom right, #F6F9FF, #E7EEF9);
 }
 
-/* === DIALOGS === */
-.dialog-pane {
-    -fx-background-color: white;
-    -fx-background-radius: 12;
-    -fx-border-color: #E1E6EE;
-    -fx-border-radius: 12;
+.boot-card {
+    -fx-background-color: rgba(255,255,255,0.9);
+    -fx-background-radius: 24;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 30, 0, 0, 8);
+    -fx-padding: 40;
+}
+
+.boot-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #006FF7;
+}
+
+.boot-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #556070;
+}
+
+.button.main {
+    -fx-background-color: linear-gradient(to bottom right, #006FF7, #409CFF);
+    -fx-font-size: 15px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 16;
+    -fx-pref-width: 160;
+    -fx-pref-height: 40;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 4);
+}
+.button.main:hover {
+    -fx-background-color: linear-gradient(to bottom right, #2C8BFF, #66ADFF);
+}
+
+/* --- Gráficas Modernas --- */
+.modern-chart .chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.modern-chart .chart-title {
+    -fx-text-fill: #1E2432;
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+}
+
+.modern-chart .chart-legend {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1E2432;
+}
+
+.modern-chart .default-color0.chart-bar,
+.modern-chart .default-color0.chart-pie {
+    -fx-bar-fill: #006FF7;
+    -fx-pie-color: #006FF7;
+}
+
+.modern-chart .default-color1.chart-bar,
+.modern-chart .default-color1.chart-pie {
+    -fx-bar-fill: #6DAEF9;
+    -fx-pie-color: #6DAEF9;
+}
+
+.modern-chart .chart-vertical-grid-lines,
+.modern-chart .chart-horizontal-grid-lines {
+    -fx-stroke: #E0E6F0;
+}
+
+.modern-chart .chart-legend-item-symbol {
+    -fx-shape: "M0,5 L10,5";
+    -fx-background-color: #006FF7, #6DAEF9;
 }

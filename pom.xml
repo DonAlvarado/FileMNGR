@@ -2,47 +2,50 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
+    <groupId>app.filecmpr</groupId>
     <artifactId>FileCMPR</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>FileCMPR</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>5.10.2</junit.version>
+        <java.version>24</java.version>
         <javafx.version>25</javafx.version>
+        <ikonli.version>12.3.1</ikonli.version>
+        <junit.version>5.10.2</junit.version>
     </properties>
 
     <dependencies>
-        <!-- JavaFX Core -->
+        <!-- ========================= -->
+        <!-- JavaFX                    -->
+        <!-- ========================= -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
             <version>${javafx.version}</version>
         </dependency>
-
-        <!-- ✅ NECESARIO para WebView / SVG animado -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-web</artifactId>
             <version>${javafx.version}</version>
         </dependency>
 
-        <!-- UI extras -->
+        <!-- ========================= -->
+        <!-- UI & FX Utils             -->
+        <!-- ========================= -->
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
@@ -73,20 +76,43 @@
             </exclusions>
         </dependency>
 
+        <!-- ========================= -->
+        <!-- Ikonli (icons)            -->
+        <!-- ========================= -->
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-core</artifactId>
+            <version>${ikonli.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-javafx</artifactId>
-            <version>12.3.1</version>
+            <version>${ikonli.version}</version>
         </dependency>
 
-        <!-- Tests -->
+        <!-- FontAwesome Pack -->
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-fontawesome-pack</artifactId>
+            <version>${ikonli.version}</version>
+        </dependency>
+
+        <!-- Material Design 2 Pack -->
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-materialdesign2-pack</artifactId>
+            <version>${ikonli.version}</version>
+        </dependency>
+
+        <!-- ========================= -->
+        <!-- Testing                   -->
+        <!-- ========================= -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
@@ -97,18 +123,22 @@
 
     <build>
         <plugins>
-            <!-- Compilador -->
+
+            <!-- ========================= -->
+            <!-- Java Compiler             -->
+            <!-- ========================= -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <source>24</source>
-                    <target>24</target>
+                    <release>${java.version}</release>
                 </configuration>
             </plugin>
 
-            <!-- Plugin JavaFX -->
+            <!-- ========================= -->
+            <!-- JavaFX Maven Plugin       -->
+            <!-- ========================= -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -120,9 +150,27 @@
                             <!-- Clase principal -->
                             <mainClass>app.filecmpr/app.filecmpr.Main</mainClass>
 
-                            <!-- 🔧 Módulos necesarios -->
-                            <modules>javafx.controls,javafx.fxml,javafx.graphics,javafx.web</modules>
+                            <!-- 🔧 Carga todos los módulos necesarios -->
+                            <modules>
+                                javafx.controls,javafx.fxml,javafx.graphics,javafx.web,
+                                ikonli.core,ikonli.javafx,ikonli.fontawesome,ikonli.materialdesign2
+                            </modules>
 
+                            <!-- Incluye dependencias Ikonli en el runtime -->
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.kordamp.ikonli</groupId>
+                                    <artifactId>ikonli-fontawesome-pack</artifactId>
+                                    <version>${ikonli.version}</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.kordamp.ikonli</groupId>
+                                    <artifactId>ikonli-materialdesign2-pack</artifactId>
+                                    <version>${ikonli.version}</version>
+                                </dependency>
+                            </dependencies>
+
+                            <!-- Empaquetado optimizado -->
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
@@ -135,4 +183,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

@@ -1,88 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.filecmpr.controllers.Menu">
-   <left>
-      <VBox prefHeight="600.0" prefWidth="215.0" style="-fx-background-color: #BFCAEA;" BorderPane.alignment="CENTER">
+<BorderPane xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="app.filecmpr.controllers.Menu"
+            stylesheets="@../styles/appTheme.css"
+            prefWidth="1100" prefHeight="650"
+            style="-fx-background-color: #F8FAFD;">
+
+   <!-- TOPBAR -->
+   <top>
+      <AnchorPane prefHeight="55"
+                  style="-fx-background-color: linear-gradient(to right, #006FF7, #6DAEF9);
+                           -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 3);">
          <children>
-            <Pane prefHeight="105.0" prefWidth="215.0">
-               <children>
-                  <Label layoutX="68.0" layoutY="20.0" prefHeight="70.0" prefWidth="147.0" text="FileM">
-                     <font>
-                        <Font name="Verdana" size="40.0" />
-                     </font>
-                     <padding>
-                        <Insets bottom="10.0" left="15.0" right="5.0" top="10.0" />
-                     </padding>
-                  </Label>
-                  <ImageView fitHeight="67.0" fitWidth="66.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/MainIcon2.png" />
-                     </image>
-                  </ImageView>
-                  <Separator layoutX="212.0" orientation="VERTICAL" prefHeight="600.0" />
-               </children>
-            </Pane>
-            <Button fx:id="btnConfig" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#showConfig" prefHeight="80.0" prefWidth="215.0" style="-fx-background-color: transparent;" text="Configure" textFill="#363636">
-            <font>
-                  <Font name="Verdana" size="20.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <VBox.margin>
-                  <Insets left="15.0" />
-               </VBox.margin>
-            </Button>
-            <Button fx:id="btnView" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="59.0" mnemonicParsing="false" onAction="#showView" prefHeight="80.0" prefWidth="215.0" style="-fx-background-color: transparent;" text="View" textFill="#363636">
-               <font>
-                  <Font name="Verdana" size="20.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <VBox.margin>
-                  <Insets left="15.0" />
-               </VBox.margin>
-            </Button>
-            <Button fx:id="btnStatics" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="139.0" mnemonicParsing="false" onAction="#showStats" prefHeight="80.0" prefWidth="215.0" style="-fx-background-color: transparent;" text="Statistics" textFill="#363636">
-               <font>
-                  <Font name="Verdana" size="20.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <VBox.margin>
-                  <Insets left="15.0" />
-               </VBox.margin>
-            </Button>
-            <Button fx:id="SystemView" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#showDiagram" prefHeight="80.0" prefWidth="215.0" style="-fx-background-color: transparent;" text="Diagram" textFill="#363636">
-               <font>
-                  <Font name="Verdana" size="20.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <VBox.margin>
-                  <Insets left="15.0" />
-               </VBox.margin>
-            </Button>
+            <Label text="Panel Principal"
+                   layoutX="24" layoutY="15"
+                   style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: 700;"/>
          </children>
+      </AnchorPane>
+   </top>
+
+   <!-- SIDEBAR -->
+   <left>
+      <VBox prefWidth="220" spacing="8"
+            style="-fx-background-color: #E9F0FB;
+                     -fx-border-width: 0 1 0 0;
+                     -fx-border-color: #D0DAEB;">
+         <padding><Insets top="20" left="10" right="10" bottom="10"/></padding>
+
+         <!-- Configuración -->
+         <Button text="Configuración"
+                 onAction="#showConfig"
+                 prefHeight="40"
+                 styleClass="sidebar-button">
+            <graphic>
+               <FontIcon iconLiteral="fa-cog" iconSize="18" iconColor="#006FF7"/>
+            </graphic>
+         </Button>
+
+         <!-- Archivos -->
+         <Button text="Ver Archivos"
+                 onAction="#showView"
+                 prefHeight="40"
+                 styleClass="sidebar-button">
+            <graphic>
+               <FontIcon iconLiteral="fa-folder-open" iconSize="18" iconColor="#006FF7"/>
+            </graphic>
+         </Button>
+
+         <!-- Estadísticas -->
+         <Button text="Estadísticas"
+                 onAction="#showStats"
+                 prefHeight="40"
+                 styleClass="sidebar-button">
+            <graphic>
+               <FontIcon iconLiteral="fa-line-chart" iconSize="18" iconColor="#006FF7"/>
+            </graphic>
+         </Button>
+
+         <!-- Diagrama del Sistema -->
+         <Button text="Diagrama del Sistema"
+                 onAction="#showDiagram"
+                 prefHeight="40"
+                 styleClass="sidebar-button">
+            <graphic>
+               <FontIcon iconLiteral="fa-sitemap" iconSize="18" iconColor="#006FF7"/>
+            </graphic>
+         </Button>
       </VBox>
    </left>
+
+   <!-- CONTENIDO CENTRAL -->
    <center>
-      <AnchorPane fx:id="mainContent" prefHeight="600.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+      <AnchorPane fx:id="mainContent"
+                  style="-fx-background-color: white;
+                           -fx-background-radius: 16;
+                           -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 20, 0, 0, 6);
+                           -fx-padding: 15;"
+                  BorderPane.alignment="CENTER"
+                  AnchorPane.topAnchor="15.0" AnchorPane.bottomAnchor="15.0"
+                  AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
+      </AnchorPane>
    </center>
+
 </BorderPane>

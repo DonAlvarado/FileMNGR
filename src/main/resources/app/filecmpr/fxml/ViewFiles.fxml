@@ -1,91 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<BorderPane prefHeight="600" prefWidth="785" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.filecmpr.controllers.ViewFiles">
+<BorderPane xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="app.filecmpr.controllers.ViewFiles"
+            stylesheets="@../styles/appTheme.css"
+            style="-fx-background-color: #F8FAFD;">
 
-   <!-- Top bar -->
+   <!-- TOP BAR -->
    <top>
-      <AnchorPane prefHeight="40" style="-fx-background-color: #BFCAEA;" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="45"
+                  style="-fx-background-color: linear-gradient(to right, #006FF7, #6DAEF9);
+                           -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 3);"
+                  BorderPane.alignment="CENTER">
          <children>
-            <HBox alignment="CENTER_LEFT" layoutX="15" layoutY="6" spacing="8">
+            <HBox alignment="CENTER_LEFT" layoutX="18" layoutY="8" spacing="10">
                <children>
-                  <ImageView fitHeight="28" fitWidth="28" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/View.png" />
-                     </image>
-                  </ImageView>
-                  <Label text="Gestión de Archivos" textFill="WHITE">
-                     <font>
-                        <Font name="Verdana Bold" size="18" />
-                     </font>
-                  </Label>
+                  <FontIcon iconLiteral="fa-folder-open" iconSize="20" iconColor="white"/>
+                  <Label text="View Files"
+                         style="-fx-text-fill: white; -fx-font-size: 17px; -fx-font-weight: bold;"/>
                </children>
             </HBox>
          </children>
       </AnchorPane>
    </top>
 
-   <!-- Main content -->
+   <!-- MAIN CONTENT -->
    <center>
-      <VBox spacing="20">
+      <VBox alignment="TOP_CENTER" spacing="20">
          <padding>
-            <Insets bottom="15" left="15" right="15" top="15" />
+            <Insets top="25" left="25" right="25" bottom="25"/>
          </padding>
          <children>
 
-            <!-- Archivos originales -->
-            <VBox spacing="10" style="-fx-background-color: #F7F9FB; -fx-padding: 10; -fx-border-color: #BFCAEA; -fx-border-radius: 5;">
+            <!-- CARD PRINCIPAL -->
+            <VBox spacing="18" style="-fx-background-color: white; -fx-background-radius: 12;
+                                          -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 4);">
+               <padding><Insets top="20" left="25" right="25" bottom="25"/></padding>
                <children>
-                  <HBox alignment="CENTER_LEFT" spacing="10">
-                     <children>
-                        <Label style="-fx-font-weight: bold;" text="Archivos cargados (originales):" />
-                        <Button fx:id="btnRefreshOriginals" text="Actualizar" />
-                        <Button fx:id="btnOpenOriginals" text="Abrir carpeta" />
-                     </children>
+
+                  <!-- Encabezado -->
+                  <HBox spacing="10" alignment="CENTER_LEFT">
+                     <FontIcon iconLiteral="fa-table" iconSize="16" iconColor="#006FF7"/>
+                     <Label text="Archivos Originales y Procesados"
+                            style="-fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #1E2432;"/>
                   </HBox>
 
-                  <TableView fx:id="originalFilesTable" prefHeight="220">
-                     <columns>
-                        <TableColumn fx:id="nameColOriginal" prefWidth="250" text="Nombre" />
-                        <TableColumn fx:id="sizeColOriginal" prefWidth="100" text="Tamaño (KB)" />
-                        <TableColumn fx:id="typeColOriginal" prefWidth="100" text="Tipo" />
-                        <TableColumn fx:id="dateColOriginal" prefWidth="200" text="Última modificación" />
-                     </columns>
-                  </TableView>
-               </children>
-            </VBox>
+                  <Separator/>
 
-            <!-- Archivos procesados -->
-            <VBox spacing="10" style="-fx-background-color: #F7F9FB; -fx-padding: 10; -fx-border-color: #BFCAEA; -fx-border-radius: 5;">
-               <children>
-                  <HBox alignment="CENTER_LEFT" spacing="10">
-                     <children>
-                        <Label style="-fx-font-weight: bold;" text="Archivos procesados (comprimidos/encriptados):" />
-                        <Button fx:id="btnRefreshProcessed" text="Actualizar" />
-                        <Button fx:id="btnOpenProcessed" text="Abrir carpeta" />
-                     </children>
-                  </HBox>
+                  <!-- SPLIT VIEW para las dos tablas -->
+                  <SplitPane dividerPositions="0.5" style="-fx-background-color: transparent;">
+                     <items>
 
-                  <TableView fx:id="processedFilesTable" prefHeight="220">
-                     <columns>
-                        <TableColumn fx:id="nameColProcessed" prefWidth="250" text="Nombre" />
-                        <TableColumn fx:id="sizeColProcessed" prefWidth="100" text="Tamaño (KB)" />
-                        <TableColumn fx:id="typeColProcessed" prefWidth="100" text="Tipo" />
-                        <TableColumn fx:id="dateColProcessed" prefWidth="200" text="Última modificación" />
-                     </columns>
-                  </TableView>
+                        <!-- Tabla de archivos originales -->
+                        <VBox spacing="10" style="-fx-background-color: #F8FAFD; -fx-background-radius: 10;">
+                           <Label text="Archivos Originales"
+                                  style="-fx-font-weight: bold; -fx-text-fill: #006FF7;"/>
+                           <TableView fx:id="originalFilesTable" prefHeight="400"
+                                      style="-fx-background-radius: 10;">
+                              <columns>
+                                 <TableColumn fx:id="nameColOriginal" text="Nombre" prefWidth="180"/>
+                                 <TableColumn fx:id="sizeColOriginal" text="Tamaño (KB)" prefWidth="120"/>
+                                 <TableColumn fx:id="typeColOriginal" text="Tipo" prefWidth="80"/>
+                                 <TableColumn fx:id="dateColOriginal" text="Última Modificación" prefWidth="180"/>
+                              </columns>
+                           </TableView>
+                        </VBox>
+
+                        <!-- Tabla de archivos procesados -->
+                        <VBox spacing="10" style="-fx-background-color: #F8FAFD; -fx-background-radius: 10;">
+                           <Label text="Archivos Procesados"
+                                  style="-fx-font-weight: bold; -fx-text-fill: #006FF7;"/>
+                           <TableView fx:id="processedFilesTable" prefHeight="400"
+                                      style="-fx-background-radius: 10;">
+                              <columns>
+                                 <TableColumn fx:id="nameColProcessed" text="Nombre" prefWidth="180"/>
+                                 <TableColumn fx:id="sizeColProcessed" text="Tamaño (KB)" prefWidth="120"/>
+                                 <TableColumn fx:id="typeColProcessed" text="Tipo" prefWidth="80"/>
+                                 <TableColumn fx:id="dateColProcessed" text="Última Modificación" prefWidth="180"/>
+                              </columns>
+                           </TableView>
+                        </VBox>
+
+                     </items>
+                  </SplitPane>
+
                </children>
             </VBox>
 
@@ -93,8 +96,17 @@
       </VBox>
    </center>
 
-   <!-- Bottom bar -->
+   <!-- BOTTOM BAR -->
    <bottom>
-      <AnchorPane prefHeight="30" style="-fx-background-color: #BFCAEA;" BorderPane.alignment="CENTER" />
+      <AnchorPane prefHeight="30"
+                  style="-fx-background-color: #E9F0FB;
+                           -fx-border-color: #D0DAEB transparent transparent transparent;"
+                  BorderPane.alignment="CENTER">
+         <children>
+            <Label layoutX="355" layoutY="8" text="AA (2025)."
+                   style="-fx-text-fill: #8A96A8; -fx-font-style: italic; -fx-font-size: 11px;"/>
+         </children>
+      </AnchorPane>
    </bottom>
+
 </BorderPane>
