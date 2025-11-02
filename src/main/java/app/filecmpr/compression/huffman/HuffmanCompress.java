@@ -30,7 +30,7 @@ public class HuffmanCompress {
         return pq.poll();
     }
 
-    // Generar Codigos
+    // Generar Codigos (Izquierda 0 y Derecha 1)
     private void generateCodes(HTreeNode node, String code, Map<Byte, String> table) {
         if (node.left == null && node.right == null) {
             table.put(node.data, code.length() > 0 ? code : "0");
@@ -52,8 +52,10 @@ public class HuffmanCompress {
             out.write(e.getKey());
             out.write(intToBytes(e.getValue()));
         }
-        out.write(intToBytes(originalLength)); // tamaño original
-        out.write(padding);                    // padding final
+
+        // Esto es para los metadatos del archivo comprimido
+        out.write(intToBytes(originalLength));
+        out.write(padding);
     }
 
     // Compresion

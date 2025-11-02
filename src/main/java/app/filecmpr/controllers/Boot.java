@@ -13,23 +13,23 @@ public class Boot {
 
     @FXML
     private void handleContinue(ActionEvent event) throws IOException {
-        // Cargar el FXML del menú
+        // Carga la escena del menu
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/app/filecmpr/fxml/MenuWindow.fxml"));
         Scene scene = new Scene(loader.load());
 
-        // Crear nueva ventana
+        // Cambia de escena a la de la app
         Stage stage = new Stage();
         stage.setTitle("FileCMPR - Menú");
         stage.setScene(scene);
 
-        // Agregar el ícono de la aplicación
+        // Agrega el icono a la nueva escena
         stage.getIcons().add(
                 new Image(getClass().getResourceAsStream("/app/filecmpr/images/appIcon.png"))
         );
 
         stage.show();
 
-        // Cerrar la ventana actual (Boot)
+        // Cierra la escena de bienvenidaa
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         currentStage.close();
     }

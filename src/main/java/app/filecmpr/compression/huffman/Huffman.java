@@ -1,3 +1,5 @@
+// Este es el wrapper del compress y decompress de Huffman
+
 package app.filecmpr.compression.huffman;
 
 import app.filecmpr.compression.Compressor;

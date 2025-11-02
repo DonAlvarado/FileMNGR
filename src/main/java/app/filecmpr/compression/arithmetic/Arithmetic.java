@@ -1,9 +1,12 @@
+//Este es el wrapper de las clases para comprimir y descomprimir las cuales se comunican con la interfaz.
+
 package app.filecmpr.compression.arithmetic;
 
 import app.filecmpr.compression.Compressor;
 
 public class Arithmetic implements Compressor {
 
+    // Instanciamos las clases de compresion y decompresion
     private final ArithmeticCompress encoder = new ArithmeticCompress();
     private final ArithmeticDecompress decoder = new ArithmeticDecompress();
 

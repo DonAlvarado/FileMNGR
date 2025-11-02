@@ -24,21 +24,23 @@ public class AESEncryptor implements Encryptor {
         if (password == null || password.isEmpty())
             throw new IllegalArgumentException("La contraseña no puede estar vacía.");
 
-        // 1. Derivar clave desde la contraseña
+        // El proceso que pasa en adelante, es secuencial y tiene que pasar paso a paso.
+
+        // Derivar clave desde la contraseña
         SecretKeySpec key = deriveKey(password);
 
-        // 2. Generar IV aleatorio
+        // Generar IV aleatorio
         byte[] iv = new byte[16];
         SecureRandom rnd = new SecureRandom();
         rnd.nextBytes(iv);
         IvParameterSpec ivSpec = new IvParameterSpec(iv);
 
-        // 3. Cifrar
+        // Cifrar
         Cipher cipher = Cipher.getInstance(CIPHER_TRANSFORM);
         cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec);
         byte[] encrypted = cipher.doFinal(plain);
 
-        // 4. Empaquetar
+        // Empaquetar
         byte[] out = new byte[16 + encrypted.length];
         System.arraycopy(iv, 0, out, 0, 16);
         System.arraycopy(encrypted, 0, out, 16, encrypted.length);
@@ -54,14 +56,16 @@ public class AESEncryptor implements Encryptor {
         if (password == null || password.isEmpty())
             throw new IllegalArgumentException("La contraseña no puede estar vacía.");
 
-        // 1. Separar IV
+        // Aqui tambien tomar en cuenta que es secuancial
+
+        // Separar IV
         byte[] iv = Arrays.copyOfRange(cipherWithIv, 0, 16);
         byte[] cipherOnly = Arrays.copyOfRange(cipherWithIv, 16, cipherWithIv.length);
 
-        // 2. Rederivar la misma clave de la misma contraseña
+        // Rederivar la misma clave de la misma contraseña
         SecretKeySpec key = deriveKey(password);
 
-        // 3. Descifrar
+        // Descifrar
         Cipher cipher = Cipher.getInstance(CIPHER_TRANSFORM);
         cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
         return cipher.doFinal(cipherOnly);

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class LZWDecompressor {
 
-    private static final int MAX_DICT_SIZE = 4096; // 12 bits
+    private static final int MAX_DICT_SIZE = 4096;
 
     public byte[] decompress(byte[] input) {
         if (input == null || input.length == 0) return new byte[0];
@@ -34,7 +34,7 @@ public class LZWDecompressor {
             } else if (code == dictionary.size()) {
                 entry = prevStr + prevStr.charAt(0);
             } else {
-                break; // corrupción de datos
+                break; // El break es para cuando se detecta que el archivo esta corrupto
             }
 
             out.writeBytes(entry.getBytes());
@@ -50,7 +50,7 @@ public class LZWDecompressor {
         return out.toByteArray();
     }
 
-    /** Utilidad para leer valores de n bits. */
+    // Para leer n Bits
     private static class BitReader {
         private final byte[] data;
         private int bitPos = 0;

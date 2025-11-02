@@ -1,3 +1,5 @@
+// El CompressionFactory se encarga de agarrar todos los paquetes de los algoritmos y producirlos para enviarlos la interfaz
+
 package app.filecmpr.compression;
 
 import java.util.LinkedHashMap;
@@ -29,7 +31,7 @@ public final class CompressionFactory {
         algorithms.put("Huffman + LZW", new HybridEncoder("LZW")); // No es buena idea combinar este tampoco, usa 12 bits en paquete, por lo tanto cuando pasa a huffman, se destruye la estructura.
     }
 
-    private CompressionFactory() { /* Clase vacia solo para instanciar*/ }
+    private CompressionFactory() { /* Vacio */ }
 
     public static Compressor get(String name) {
         return algorithms.get(name);

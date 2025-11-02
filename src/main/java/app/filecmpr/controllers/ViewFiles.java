@@ -4,9 +4,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.stream.Stream;
+
 import app.filecmpr.utils.AppState;
 
 public class ViewFiles {
@@ -24,10 +29,11 @@ public class ViewFiles {
     public void initialize() {
         setupColumns(nameColOriginal, sizeColOriginal, typeColOriginal, dateColOriginal);
         setupColumns(nameColProcessed, sizeColProcessed, typeColProcessed, dateColProcessed);
+
         originalFilesTable.setItems(originalFiles);
         processedFilesTable.setItems(processedFiles);
 
-        if (AppState.lastOriginal != null && AppState.lastProcessed != null) {
+        if (AppState.lastOriginal != null || AppState.lastProcessed != null) {
             loadFiles(AppState.lastOriginal, AppState.lastProcessed);
         }
     }
@@ -45,16 +51,46 @@ public class ViewFiles {
     private void loadFiles(File original, File processed) {
         originalFiles.clear();
         processedFiles.clear();
-        if (original.exists()) originalFiles.add(new FileInfo(original));
-        if (processed.exists()) processedFiles.add(new FileInfo(processed));
+
+        // Arhivos Originales
+        if (original != null && original.exists()) {
+            if (original.isDirectory()) {
+                addDirectoryContents(original, originalFiles);
+            } else {
+                originalFiles.add(new FileInfo(original));
+            }
+        }
+
+        // Archivos Procesados
+        if (processed != null && processed.exists()) {
+            if (processed.isDirectory()) {
+                addDirectoryContents(processed, processedFiles);
+            } else {
+                processedFiles.add(new FileInfo(processed));
+            }
+        }
     }
 
+    // Añade el contenido de una carpeta (solo archivos) a la lista visual.
+    private void addDirectoryContents(File dir, ObservableList<FileInfo> list) {
+        try (Stream<Path> stream = Files.walk(dir.toPath())) {
+            stream.filter(Files::isRegularFile)
+                    .map(Path::toFile)
+                    .sorted((a,b) -> a.getName().compareToIgnoreCase(b.getName()))
+                    .forEach(file -> list.add(new FileInfo(file)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Clase auxiliar para representar la información de los archivos en la tabla
     public static class FileInfo {
         private final javafx.beans.property.SimpleStringProperty name, size, type, date;
 
         public FileInfo(File file) {
             this.name = new javafx.beans.property.SimpleStringProperty(file.getName());
-            this.size = new javafx.beans.property.SimpleStringProperty(String.format("%.2f KB", file.length() / 1024.0));
+            this.size = new javafx.beans.property.SimpleStringProperty(
+                    String.format("%.2f KB", file.length() / 1024.0));
             this.type = new javafx.beans.property.SimpleStringProperty(getExt(file));
             this.date = new javafx.beans.property.SimpleStringProperty(
                     new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date(file.lastModified())));

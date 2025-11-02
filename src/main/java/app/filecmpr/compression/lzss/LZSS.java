@@ -1,3 +1,5 @@
+// Wrapper de compresion y decompresion del LZSS
+
 package app.filecmpr.compression.lzss;
 
 import app.filecmpr.compression.Compressor;

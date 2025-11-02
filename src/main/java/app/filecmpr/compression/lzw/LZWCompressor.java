@@ -4,18 +4,14 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Implementación del algoritmo de compresión lzw.
- * Trabaja a nivel binario, emitiendo códigos de 12 bits.
- */
 public class LZWCompressor {
 
-    private static final int MAX_DICT_SIZE = 4096; // 12 bits
+    private static final int MAX_DICT_SIZE = 4096; // Emitimos 12 bits
 
     public byte[] compress(byte[] input) {
         if (input == null || input.length == 0) return new byte[0];
 
-        // Inicializar diccionario con 256 entradas (caracteres únicos)
+        // Se inicializa el diccionario con 256 entradas
         Map<String, Integer> dictionary = new HashMap<>();
         for (int i = 0; i < 256; i++) {
             dictionary.put(String.valueOf((char) i), i);
@@ -50,7 +46,7 @@ public class LZWCompressor {
         return out.toByteArray();
     }
 
-    /** Utilidad para escribir valores de n bits. */
+    // Aqui escribimos valores de n bits
     private static class BitWriter {
         private final ByteArrayOutputStream out;
         private int currentByte = 0;

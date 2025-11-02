@@ -18,17 +18,15 @@ public class Main extends Application {
         stage.setTitle("FileCMPR");
         stage.setScene(scene);
 
-        // Esto muestra el icono de la App
+        // Carga el icono de la app por que desde las escenas no se puede.
         stage.getIcons().add(
                 new Image(getClass().getResourceAsStream("/app/filecmpr/images/appIcon.png"))
         );
-
-
         stage.show();
     }
 
     public static void main(String[] args) {
-        clearData.cleanTmpDir();
+        clearData.cleanTmpDir(); // Al iniciar la app limpia el directorio temporal.
         launch();
     }
 }

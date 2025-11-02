@@ -1,3 +1,5 @@
+// Wrapper de la compresion y decompresion del LZ78
+
 package app.filecmpr.compression.lz78;
 
 import app.filecmpr.compression.Compressor;
@@ -24,6 +26,6 @@ public class LZ78 implements Compressor {
 
     @Override
     public String getName() {
-        return "lz78";
+        return "lz78"; // Teneren cuenta que hay que comparar los nombres que devuelve que esten bien escritos como esta en el controlador de la escena.
     }
 }

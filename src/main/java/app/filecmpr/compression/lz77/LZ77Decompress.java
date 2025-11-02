@@ -12,7 +12,7 @@ public class LZ77Decompress {
         int windowSize = ((input[4] & 0xFF) << 8) | (input[5] & 0xFF);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        int pos = 6; // después del header
+        int pos = 6; // La posicion donde inicia realmente el archivo sin tomar en cuenta el cabezal construido.
 
         while (pos + 4 <= input.length) {
             int offset = ((input[pos] & 0xFF) << 8) | (input[pos + 1] & 0xFF);

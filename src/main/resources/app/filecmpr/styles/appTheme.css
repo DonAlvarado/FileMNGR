@@ -1,0 +1,204 @@
+/* ==========================================================
+   FileCMPR – Modern UI Theme (2025)
+   Author: Axel Alvarado
+   Clean, professional, and friendly visual style for JavaFX
+   ========================================================== */
+
+/* === BASE SETUP === */
+.root {
+    -fx-font-family: "Inter", "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+    -fx-background-color: linear-gradient(to bottom right, #F6F8FB, #E8ECF5);
+    -fx-text-fill: #1A1A1A;
+}
+
+/* === PRIMARY COLORS === */
+:root {
+    -fx-accent: #006FF7;
+    -fx-accent-light: #BFCAEA;
+    -fx-accent-hover: #338FFF;
+    -fx-danger: #D93F3F;
+    -fx-success: #37B26C;
+    -fx-shadow: rgba(0, 0, 0, 0.15);
+}
+
+/* === BUTTONS === */
+.button {
+    -fx-background-color: linear-gradient(to bottom right, #006FF7, #2C8BFF);
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+    -fx-padding: 8 18;
+    -fx-font-weight: 600;
+    -fx-effect: dropshadow(gaussian, -fx-shadow, 6, 0, 0, 1);
+    -fx-cursor: hand;
+    -fx-transition: 0.25s;
+}
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom right, #338FFF, #5EA5FF);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);
+}
+.button:pressed {
+    -fx-background-color: #005BD4;
+    -fx-translate-y: 1px;
+}
+
+/* === TEXTFIELDS, PASSWORDFIELDS, COMBOBOX === */
+.text-field, .password-field, .combo-box, .combo-box-base {
+    -fx-background-color: white;
+    -fx-border-color: #C5D2E0;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 6 10;
+    -fx-prompt-text-fill: #98A4B3;
+    -fx-text-fill: #1A1A1A;
+}
+.text-field:focused, .password-field:focused, .combo-box:focused {
+    -fx-border-color: #006FF7;
+    -fx-effect: dropshadow(gaussian, rgba(0,111,247,0.2), 8, 0, 0, 0);
+}
+
+/* === LABELS & TITLES === */
+.label {
+    -fx-text-fill: #1E2432;
+}
+.label.title {
+    -fx-font-size: 20px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #006FF7;
+}
+.label.subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #64748B;
+}
+
+/* === LISTVIEW / TABLEVIEW === */
+.list-view, .table-view {
+    -fx-background-color: white;
+    -fx-border-color: #E1E6EE;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 5;
+}
+.list-cell, .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1E2432;
+    -fx-font-size: 13px;
+}
+.list-cell:hover, .table-row-cell:hover {
+    -fx-background-color: #F0F7FF;
+}
+.list-cell:selected, .table-row-cell:selected {
+    -fx-background-color: #D8E8FF;
+    -fx-text-fill: #004A99;
+}
+
+/* === TABS === */
+.tab-pane {
+    -fx-tab-min-height: 32px;
+    -fx-tab-max-height: 32px;
+}
+.tab {
+    -fx-background-color: transparent;
+    -fx-padding: 6 14;
+    -fx-font-weight: 600;
+}
+.tab:selected {
+    -fx-background-color: #E7F0FF;
+    -fx-text-fill: #006FF7;
+}
+
+/* === PROGRESS BAR === */
+.progress-bar {
+    -fx-accent: #006FF7;
+    -fx-background-color: #E8ECF5;
+    -fx-background-radius: 10;
+    -fx-padding: 4;
+}
+
+/* === CHARTS === */
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+.chart-legend {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1E2432;
+}
+.axis {
+    -fx-tick-label-fill: #546E7A;
+}
+
+/* === MENU BAR / TOOLBAR === */
+.menu-bar, .tool-bar {
+    -fx-background-color: linear-gradient(to right, #006FF7, #338FFF);
+    -fx-text-fill: white;
+    -fx-padding: 8;
+}
+.menu-bar .label, .tool-bar .label {
+    -fx-text-fill: white;
+}
+
+/* === BORDERPANES / ANCHORPANES === */
+.anchor-pane, .border-pane, .vbox, .hbox {
+    -fx-background-color: transparent;
+}
+
+/* === CARD STYLE === */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-padding: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 10, 0, 0, 2);
+}
+
+/* === TOGGLE / RADIO / CHECK === */
+.radio-button, .check-box {
+    -fx-text-fill: #1E2432;
+}
+.radio-button:selected .radio {
+    -fx-mark-color: #006FF7;
+}
+.check-box:selected .box {
+    -fx-mark-color: #006FF7;
+}
+
+/* === SCROLL BAR === */
+.scroll-bar:horizontal, .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+.scroll-bar .thumb {
+    -fx-background-color: rgba(0,0,0,0.2);
+    -fx-background-radius: 8;
+}
+.scroll-bar .thumb:hover {
+    -fx-background-color: rgba(0,0,0,0.35);
+}
+
+/* === ANIMATIONS (subtle hover motion) === */
+.button, .text-field, .list-cell, .table-row-cell {
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+/* === FOOTER LABELS === */
+.footer {
+    -fx-text-fill: #808B99;
+    -fx-font-size: 11px;
+}
+
+/* === SPLASH / BOOT WINDOW === */
+.boot-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #006FF7;
+}
+.boot-subtitle {
+    -fx-text-fill: #64748B;
+    -fx-font-size: 13px;
+}
+
+/* === DIALOGS === */
+.dialog-pane {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: #E1E6EE;
+    -fx-border-radius: 12;
+}

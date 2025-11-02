@@ -10,7 +10,7 @@ public class LZ78Decompress {
         if (input == null || input.length == 0) return new byte[0];
 
         List<String> dictionary = new ArrayList<>();
-        dictionary.add(""); // índice 0 reservado
+        dictionary.add(""); // El indice 0 no se puede usar.
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 

@@ -1,3 +1,5 @@
+// El Wrapper + Logica para combinar Huffman con algun LZ (No es buena idea combinar algunos LZ)
+
 package app.filecmpr.compression.hybrid;
 
 import app.filecmpr.compression.Compressor;
@@ -15,7 +17,7 @@ public class HybridEncoder implements Compressor {
     public HybridEncoder(String lzType) {
         this.huffman = new Huffman();
 
-        // Permite elegir el algoritmo LZ base
+        // Con esto podemos hacer que sea Huffman + Algun LZ
         switch (lzType.toUpperCase()) {
             case "LZ77" -> this.lz = new LZ77();
             case "LZ78" -> this.lz = new LZ78();

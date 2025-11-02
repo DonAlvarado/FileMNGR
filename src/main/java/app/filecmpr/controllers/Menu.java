@@ -24,24 +24,25 @@ public class Menu {
         }
     }
 
-    // Botón "Configure"
+    // Boton para la escena config
     @FXML
     private void showConfig() {
         loadContent("/app/filecmpr/fxml/ConfigMenu.fxml");
     }
 
-    // Botón "View" (más adelante tendrás su .fxml)
+    // Boton para la escena de view
     @FXML
     private void showView() {
         loadContent("/app/filecmpr/fxml/ViewFiles.fxml");
     }
 
-    // Botón "Statics" (más adelante también)
+    // Boton para la escena de Statistics
     @FXML
     private void showStats() {
         loadContent("/app/filecmpr/fxml/StatisticsView.fxml");
     }
 
+    // Boton para cargar el diagrama del flujo del sistema
     @FXML
     private void showDiagram() {
         loadContent("/app/filecmpr/fxml/SystemDiagramView.fxml");

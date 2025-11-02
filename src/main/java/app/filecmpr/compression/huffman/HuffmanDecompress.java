@@ -9,7 +9,7 @@ import java.util.PriorityQueue;
 
 public class HuffmanDecompress {
 
-    // ===== BYTES -> INT =====
+    // Bytes a Entero
     private int bytesToInt(byte[] b) {
         return ((b[0] & 0xFF) << 24)
                 | ((b[1] & 0xFF) << 16)
@@ -17,7 +17,7 @@ public class HuffmanDecompress {
                 |  (b[3] & 0xFF);
     }
 
-    // ===== READ HEADER =====
+    // Leer el cabezal al descomprimir
     private Map<Byte, Integer> readHeader(ByteArrayInputStream in, HeaderInfo info) throws IOException {
         Map<Byte, Integer> freq = new HashMap<>();
         int size = in.read();
@@ -36,7 +36,7 @@ public class HuffmanDecompress {
         int padding;
     }
 
-    // ===== REBUILD TREE =====
+    // Reconstruir arbol
     private HTreeNode buildTree(Map<Byte, Integer> freq) {
         PriorityQueue<HTreeNode> pq = new PriorityQueue<>();
         for (Map.Entry<Byte, Integer> e : freq.entrySet())
@@ -49,7 +49,7 @@ public class HuffmanDecompress {
         return pq.poll();
     }
 
-    // ===== DECOMPRESS =====
+    // Descomprimir el archivo
     public byte[] decompress(byte[] input) {
         if (input.length == 0) return new byte[0];
         try {

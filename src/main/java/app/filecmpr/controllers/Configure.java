@@ -24,7 +24,6 @@ public class Configure {
     @FXML private RadioButton radioArchivo;
     @FXML private RadioButton radioCarpeta;
     @FXML private ToggleGroup tipoGroup;
-
     @FXML private ChoiceBox<String> operationChoice;
     @FXML private ChoiceBox<String> compressionChoice;
     @FXML private PasswordField passwordField;
@@ -53,12 +52,14 @@ public class Configure {
         operationChoice.setValue(props.getProperty("operation", "Comprimir"));
         compressionChoice.setValue(props.getProperty("algorithm",
                 compressionChoice.getItems().isEmpty() ? "LZ77" : compressionChoice.getItems().get(0)));
-        passwordField.setText(props.getProperty("password", ""));
 
         if ("carpeta".equalsIgnoreCase(props.getProperty("pathType", "archivo")))
             radioCarpeta.setSelected(true);
         else
             radioArchivo.setSelected(true);
+
+        // Nunca mantener contraseñas guardadas
+        passwordField.clear();
 
         tipoGroup.selectedToggleProperty().addListener((obs, a, b) -> {
             selectedFile = null;
@@ -83,7 +84,7 @@ public class Configure {
 
     private void updateUI(String mode) {
         boolean compression = mode != null && mode.contains("Comprimir");
-        boolean encryption  = mode != null && mode.contains("Encriptar") || mode != null && mode.contains("Desencriptar");
+        boolean encryption  = mode != null && (mode.contains("Encriptar") || mode.contains("Desencriptar"));
         compressionChoice.setDisable(!compression);
         passwordField.setDisable(!encryption);
     }
@@ -97,7 +98,6 @@ public class Configure {
     private void saveConfig() {
         props.setProperty("operation", operationChoice.getValue());
         props.setProperty("algorithm", compressionChoice.getValue());
-        props.setProperty("password", passwordField.getText());
         props.setProperty("pathType", radioCarpeta.isSelected() ? "carpeta" : "archivo");
         try (FileOutputStream out = new FileOutputStream(CONFIG_PATH)) {
             props.store(out, "Configuración");
@@ -196,36 +196,49 @@ public class Configure {
         }
     }
 
+    // Procesamiento de archivos
     private void processFile(File file, String operation, String algorithm, String password) throws Exception {
         Compressor comp = CompressionFactory.get(algorithm);
         Encryptor enc = EncryptionFactory.get("AES-256");
 
         byte[] input = Files.readAllBytes(file.toPath());
         byte[] result = null;
-        String outName = file.getName();
+        String suggestedName;
         long start = System.currentTimeMillis();
 
         if (operation.contains("Comprimir y Encriptar")) {
             result = enc.encrypt(comp.compress(input), password);
-            outName = outName.replaceFirst("\\.[^.]+$", "") + ".ec";
+            suggestedName = file.getName().replaceFirst("\\.[^.]+$", "") + ".ec";
         } else if (operation.contains("Descomprimir y Desencriptar")) {
             result = comp.decompress(enc.decrypt(input, password));
-            outName = outName.replaceFirst("\\.[^.]+$", "") + "_rec.txt";
+            suggestedName = file.getName().replaceFirst("\\.[^.]+$", "") + "_rec.txt";
         } else if (operation.contains("Solo Encriptar")) {
             result = enc.encrypt(input, password);
-            outName = outName.replaceFirst("\\.[^.]+$", "") + ".enc";
+            suggestedName = file.getName().replaceFirst("\\.[^.]+$", "") + ".enc";
         } else if (operation.equals("Desencriptar")) {
             result = enc.decrypt(input, password);
-            outName = outName.replaceFirst("\\.[^.]+$", "") + "_dec.txt";
+            suggestedName = file.getName().replaceFirst("\\.[^.]+$", "") + "_dec.txt";
         } else if (operation.contains("Comprimir")) {
             result = comp.compress(input);
-            outName = outName.replaceFirst("\\.[^.]+$", "") + ".cmp";
+            suggestedName = file.getName().replaceFirst("\\.[^.]+$", "") + ".cmp";
         } else if (operation.contains("Descomprimir")) {
             result = comp.decompress(input);
-            outName = outName.replaceFirst("\\.[^.]+$", "") + "_dec.txt";
-        }
+            suggestedName = file.getName().replaceFirst("\\.[^.]+$", "") + "_dec.txt";
+        } else return;
 
         long time = System.currentTimeMillis() - start;
+
+        Stage stage = (Stage) btnProcess.getScene().getWindow();
+        FileChooser saver = new FileChooser();
+        saver.setTitle("Guardar archivo resultante");
+        saver.setInitialFileName(suggestedName);
+        File outFile = saver.showSaveDialog(stage);
+        if (outFile == null) {
+            statusLabel.setText("Operación cancelada por el usuario.");
+            return;
+        }
+
+        Files.write(outFile.toPath(), result);
 
         File tmpDir = new File("app_data/tmp");
         if (!tmpDir.exists()) tmpDir.mkdirs();
@@ -233,16 +246,14 @@ public class Configure {
         File tempOriginal = new File(tmpDir, file.getName());
         Files.copy(file.toPath(), tempOriginal.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-        File outFile = new File(tmpDir, outName);
-        Files.write(outFile.toPath(), result);
-
         AppState.lastOriginal = tempOriginal;
         AppState.lastProcessed = outFile;
         AppState.lastTime = time;
 
-        statusLabel.setText("Archivo procesado (" + operation + ") en " + time + " ms");
+        statusLabel.setText("Archivo procesado y guardado en: " + outFile.getAbsolutePath());
     }
 
+    // Procesamiento de folders
     private void processFolder(File folder, String operation, String algorithm, String password) throws Exception {
         Compressor comp = CompressionFactory.get(algorithm);
         Encryptor enc = EncryptionFactory.get("AES-256");
@@ -252,39 +263,38 @@ public class Configure {
 
         long start = System.currentTimeMillis();
         byte[] data, result;
-        File output;
+        File finalOutput;
 
         if (operation.contains("Comprimir y Encriptar")) {
             File merged = FolderPackager.mergeFolder(folder);
             data = Files.readAllBytes(merged.toPath());
             result = enc.encrypt(comp.compress(data), password);
-            output = new File(tmpDir, folder.getName() + "_pack.ec");
-            Files.write(output.toPath(), result);
+            finalOutput = promptSaveFile(folder.getName() + "_pack.ec", "Archivo Encriptado (.ec)", "*.ec", result);
         } else if (operation.contains("Descomprimir y Desencriptar")) {
             data = Files.readAllBytes(folder.toPath());
             result = comp.decompress(enc.decrypt(data, password));
-            File decoded = new File(tmpDir, folder.getName().replace(".ec", "_decoded.txt"));
-            Files.write(decoded.toPath(), result);
-            FolderPackager.unmergeFolder(decoded);
-            output = decoded;
+            File decodedTmp = new File(tmpDir, folder.getName().replace(".ec", "_decoded.txt"));
+            Files.write(decodedTmp.toPath(), result);
+            File restoredDir = FolderPackager.unmergeFolder(decodedTmp);
+            decodedTmp.delete();
+            finalOutput = promptSaveDirectory(restoredDir);
         } else if (operation.contains("Comprimir")) {
             File merged = FolderPackager.mergeFolder(folder);
             data = Files.readAllBytes(merged.toPath());
             result = comp.compress(data);
-            output = new File(tmpDir, folder.getName() + "_compressed.cmp");
-            Files.write(output.toPath(), result);
+            finalOutput = promptSaveFile(folder.getName() + "_compressed.cmp", "Archivo Comprimido (.cmp)", "*.cmp", result);
         } else if (operation.contains("Descomprimir")) {
             data = Files.readAllBytes(folder.toPath());
             result = comp.decompress(data);
-            File decoded = new File(tmpDir, folder.getName().replace(".cmp", "_decoded.txt"));
-            Files.write(decoded.toPath(), result);
-            FolderPackager.unmergeFolder(decoded);
-            output = decoded;
+            File decodedTmp = new File(tmpDir, folder.getName().replace(".cmp", "_decoded.txt"));
+            Files.write(decodedTmp.toPath(), result);
+            File restoredDir = FolderPackager.unmergeFolder(decodedTmp);
+            decodedTmp.delete();
+            finalOutput = promptSaveDirectory(restoredDir);
         } else if (operation.equals("Desencriptar")) {
             data = Files.readAllBytes(folder.toPath());
             result = enc.decrypt(data, password);
-            output = new File(tmpDir, folder.getName().replace(".enc", "_dec.txt"));
-            Files.write(output.toPath(), result);
+            finalOutput = promptSaveFile(folder.getName().replace(".enc", "_dec.txt"), "Archivo Desencriptado", "*.*", result);
         } else {
             statusLabel.setText("Operación no implementada para carpetas: " + operation);
             return;
@@ -293,8 +303,42 @@ public class Configure {
         long time = System.currentTimeMillis() - start;
         AppState.lastTime = time;
         AppState.lastOriginal = folder;
-        AppState.lastProcessed = output;
+        AppState.lastProcessed = finalOutput;
 
-        statusLabel.setText("Carpeta procesada (" + operation + ") en " + time + " ms");
+        statusLabel.setText("Carpeta procesada y guardada en: " + finalOutput.getAbsolutePath());
+    }
+
+    // Auxiliares para guardar los archivos
+    private File promptSaveFile(String suggestedName, String desc, String pattern, byte[] data) throws IOException {
+        Stage stage = (Stage) btnProcess.getScene().getWindow();
+        FileChooser saver = new FileChooser();
+        saver.setTitle("Guardar archivo");
+        saver.setInitialFileName(suggestedName);
+        saver.getExtensionFilters().add(new FileChooser.ExtensionFilter(desc, pattern));
+
+        File file = saver.showSaveDialog(stage);
+        if (file == null) throw new IOException("Guardado cancelado por el usuario.");
+        Files.write(file.toPath(), data);
+        return file;
+    }
+
+    private File promptSaveDirectory(File restoredDir) throws IOException {
+        Stage stage = (Stage) btnProcess.getScene().getWindow();
+        DirectoryChooser chooser = new DirectoryChooser();
+        chooser.setTitle("Seleccionar carpeta destino");
+        File destination = chooser.showDialog(stage);
+        if (destination == null) throw new IOException("Guardado cancelado por el usuario.");
+
+        File finalDir = new File(destination, restoredDir.getName());
+        Files.walk(restoredDir.toPath()).forEach(src -> {
+            try {
+                Path dest = finalDir.toPath().resolve(restoredDir.toPath().relativize(src));
+                if (Files.isDirectory(src)) Files.createDirectories(dest);
+                else Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        return finalDir;
     }
 }

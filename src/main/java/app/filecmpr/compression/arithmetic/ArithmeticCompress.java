@@ -11,6 +11,7 @@ public class ArithmeticCompress {
         int fi;
         int fi1;
 
+        // Parametros para construir la tabla de frecuencia
         SymbolData(byte s, int c, int fi, int fi1) {
             this.symbol = s;
             this.count = c;
@@ -34,9 +35,9 @@ public class ArithmeticCompress {
         String bits = encodeArithmetic(input, table, total, R, k);
         byte[] bitsPacked = bitsToBytes(bits);
 
-        // header
+        // Cabezal, basicamente los metadatos de el txt
         ByteBuffer buf = ByteBuffer.allocate(3 + 4 * 3 + table.size() * 5 + bitsPacked.length);
-        buf.put(new byte[]{'A', 'R', 'I'});
+        buf.put(new byte[]{'A', 'R', 'I'}); // Esto es para cuando se maneje por carpetas para que el algoritmo logre identificar el inicio del archivo ademas del algoritmo utilizado
         buf.putInt(input.length);
         buf.putInt(k);
         buf.putInt(table.size());
@@ -64,7 +65,7 @@ public class ArithmeticCompress {
     private String encodeArithmetic(byte[] input, List<SymbolData> table, int T, long R, int k) {
         long low = 0, high = R - 1;
         int pending = 0;
-        StringBuilder bits = new StringBuilder();
+        StringBuilder bits = new StringBuilder(); //Al terminar de emitir bits hace un ->toString();
 
         for (byte b : input) {
             SymbolData s = table.stream().filter(t -> t.symbol == b).findFirst().get();
@@ -91,7 +92,7 @@ public class ArithmeticCompress {
         bits.append(low < (R >>> 2) ? '0' : '1');
         while (pending-- > 0) bits.append('1');
 
-        return bits.toString();
+        return bits.toString(); // Aqui se convierte la cadena a String
     }
 
     private byte[] bitsToBytes(String bits) {

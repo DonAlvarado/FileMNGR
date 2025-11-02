@@ -9,7 +9,7 @@ public class HTree {
     private HTreeNode root;
     private final Map<Byte, String> codeTable = new HashMap<>();
 
-    // ===================== BUILD TREE =====================
+    // Creacion del Arbol
     public void build(Map<Byte, Integer> freq) {
         PriorityQueue<HTreeNode> pq = new PriorityQueue<>();
         for (Map.Entry<Byte, Integer> entry : freq.entrySet()) {
@@ -27,7 +27,7 @@ public class HTree {
         generateCodes(root, "");
     }
 
-    // ===================== GENERATE CODE TABLE =====================
+    // Generar la tabla del del codigo para el arbo;
     private void generateCodes(HTreeNode node, String code) {
         if (node == null) return;
         if (node.left == null && node.right == null) {

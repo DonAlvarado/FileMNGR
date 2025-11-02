@@ -5,7 +5,7 @@ import java.io.ByteArrayOutputStream;
 
 public class LZSSCompressor {
 
-    private static final int WINDOW_SIZE = 4096;
+    private static final int WINDOW_SIZE = 4096; // Colocamos una ventana grande de 4096 bits
     private static final int MIN_MATCH = 3;
     private static final int MAX_MATCH = 18;
 
@@ -24,7 +24,7 @@ public class LZSSCompressor {
                 int bestDist = 0;
                 int startWindow = Math.max(0, pos - WINDOW_SIZE);
 
-                // Buscar la mejor coincidencia
+                // Encuentra la mejor a opcion que coincida
                 for (int j = startWindow; j < pos; j++) {
                     int len = 0;
                     while (len < MAX_MATCH && pos + len < input.length &&
@@ -38,11 +38,11 @@ public class LZSSCompressor {
                 }
 
                 if (bestLen >= MIN_MATCH) {
-                    // Escribir referencia (offset, length)
+                    // Escribe la referencia offset y length
                     buffer.write((bestDist >> 4) & 0xFF);
                     buffer.write(((bestDist & 0xF) << 4) | ((bestLen - MIN_MATCH) & 0xF));
                     pos += bestLen;
-                    // flag bit = 0 -> referencia
+                    //Si el bit flag es - 0 entonces es referencia
                 } else {
                     // Es literal
                     flags |= (1 << (7 - bit));

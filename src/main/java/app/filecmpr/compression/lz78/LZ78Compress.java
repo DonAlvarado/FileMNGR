@@ -19,17 +19,17 @@ public class LZ78Compress {
             current.append((char) (b & 0xFF));
 
             if (!dictionary.containsKey(current.toString())) {
-                // Prefijo sin registro, emitir
+                // Si es prefijo sin registro alguno, este emite
                 String prefix = current.substring(0, current.length() - 1);
                 int index = prefix.isEmpty() ? 0 : dictionary.get(prefix);
                 byte symbol = (byte) current.charAt(current.length() - 1);
 
-                // escribir (índice, símbolo)
+                // Escribe el indice y el simbolo
                 output.write((index >> 8) & 0xFF);
                 output.write(index & 0xFF);
                 output.write(symbol);
 
-                // agregar nueva entrada
+                // Agrega a el diccionario
                 dictionary.put(current.toString(), dictIndex++);
                 current.setLength(0);
             }

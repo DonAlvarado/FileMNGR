@@ -12,12 +12,12 @@ public class LZ77Compress {
         int windowSize = DEFAULT_WINDOW_SIZE;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        // Encabezado
+        // Cabezal para identificar
         out.write('L');
         out.write('Z');
         out.write('7');
         out.write('7');
-        out.write((windowSize >> 8) & 0xFF);
+        out.write((windowSize >> 8) & 0xFF); // Se usan 8 Bits de Ventana
         out.write(windowSize & 0xFF);
 
         int pos = 0;
@@ -39,7 +39,7 @@ public class LZ77Compress {
             }
 
             byte next = (pos + bestLength < input.length) ? input[pos + bestLength] : 0;
-            // Escribir tupla (offset, length, nextByte)
+            // Se ecscribe la tupla para poder recuperar el archivo
             out.write((bestOffset >> 8) & 0xFF);
             out.write(bestOffset & 0xFF);
             out.write(bestLength & 0xFF);

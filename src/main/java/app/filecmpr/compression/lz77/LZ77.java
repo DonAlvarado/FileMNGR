@@ -1,3 +1,5 @@
+// Wrapper de la compresion y decompresion del algoritmo LZ77
+
 package app.filecmpr.compression.lz77;
 
 import app.filecmpr.compression.Compressor;
