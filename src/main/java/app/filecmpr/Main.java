@@ -18,7 +18,7 @@ public class Main extends Application {
         stage.setTitle("FileCMPR");
         stage.setScene(scene);
 
-        // Agregar icono de la aplicación
+        // Esto muestra el icono de la App
         stage.getIcons().add(
                 new Image(getClass().getResourceAsStream("/app/filecmpr/images/appIcon.png"))
         );

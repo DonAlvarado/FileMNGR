@@ -45,16 +45,11 @@ public class Configure {
                 "Descomprimir", "Descomprimir y Desencriptar"
         );
 
-        // ======== CAMBIO: Cargar dinámicamente desde CompressionFactory ========
+        // === Cargar algoritmos disponibles ===
         Set<String> algorithms = CompressionFactory.getAlgorithmNames();
-        if (algorithms == null || algorithms.isEmpty()) {
-            // fallback por si la fábrica está vacía
-            compressionChoice.getItems().setAll("Vacio");
-        } else {
-            compressionChoice.getItems().setAll(algorithms);
-        }
-        // ======================================================================
+        compressionChoice.getItems().setAll(algorithms.isEmpty() ? List.of("Vacio") : algorithms);
 
+        // === Restaurar valores guardados ===
         operationChoice.setValue(props.getProperty("operation", "Comprimir"));
         compressionChoice.setValue(props.getProperty("algorithm",
                 compressionChoice.getItems().isEmpty() ? "LZ77" : compressionChoice.getItems().get(0)));
@@ -65,6 +60,7 @@ public class Configure {
         else
             radioArchivo.setSelected(true);
 
+        // === Listeners ===
         tipoGroup.selectedToggleProperty().addListener((obs, a, b) -> {
             selectedFile = null;
             selectedFolder = null;
@@ -73,13 +69,20 @@ public class Configure {
             updateStatus();
         });
 
-        operationChoice.getSelectionModel().selectedItemProperty().addListener((o,a,b)->{saveConfig(); updateStatus();});
+        operationChoice.getSelectionModel().selectedItemProperty().addListener((o, a, b) -> {
+            saveConfig();
+            updateUI(b); // ← Asegura actualización inmediata del UI
+            updateStatus();
+        });
+
         compressionChoice.getSelectionModel().selectedItemProperty().addListener((o,a,b)-> saveConfig());
         passwordField.textProperty().addListener((o,a,b)-> saveConfig());
 
+        // === Inicializa correctamente el UI ===
         updateUI(operationChoice.getValue());
         updateStatus();
     }
+
 
     private void updateUI(String mode) {
         boolean compression = mode != null && mode.contains("Comprimir");

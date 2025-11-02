@@ -1,11 +1,16 @@
-package app.filecmpr.compression.arithmetic;
+package app.filecmpr.compression.lz77;
 
 import app.filecmpr.compression.Compressor;
 
-public class Arithmetic implements Compressor {
+public class LZ77 implements Compressor {
 
-    private final ArithmeticCompress encoder = new ArithmeticCompress();
-    private final ArithmeticDecompress decoder = new ArithmeticDecompress();
+    private final LZ77Compress encoder;
+    private final LZ77Decompress decoder;
+
+    public LZ77() {
+        this.encoder = new LZ77Compress();
+        this.decoder = new LZ77Decompress();
+    }
 
     @Override
     public byte[] compress(byte[] input) {
@@ -19,6 +24,6 @@ public class Arithmetic implements Compressor {
 
     @Override
     public String getName() {
-        return "ARITHMETIC";
+        return "lz77";
     }
 }

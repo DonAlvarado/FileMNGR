@@ -8,7 +8,7 @@ import java.util.PriorityQueue;
 
 public class HuffmanCompress {
 
-    // ===== BUILD FREQUENCIES =====
+    // Frecuencias
     private Map<Byte, Integer> buildFrequencyMap(byte[] data) {
         Map<Byte, Integer> freq = new HashMap<>();
         for (byte b : data)
@@ -16,7 +16,7 @@ public class HuffmanCompress {
         return freq;
     }
 
-    // ===== BUILD TREE =====
+    // Arbol
     private HTreeNode buildTree(Map<Byte, Integer> freq) {
         PriorityQueue<HTreeNode> pq = new PriorityQueue<>();
         for (Map.Entry<Byte, Integer> e : freq.entrySet())
@@ -30,7 +30,7 @@ public class HuffmanCompress {
         return pq.poll();
     }
 
-    // ===== GENERATE CODES =====
+    // Generar Codigos
     private void generateCodes(HTreeNode node, String code, Map<Byte, String> table) {
         if (node.left == null && node.right == null) {
             table.put(node.data, code.length() > 0 ? code : "0");
@@ -40,12 +40,12 @@ public class HuffmanCompress {
         generateCodes(node.right, code + "1", table);
     }
 
-    // ===== INT <-> BYTES =====
+    // Enteros a Bytes
     private byte[] intToBytes(int v) {
         return new byte[]{(byte) (v >>> 24), (byte) (v >>> 16), (byte) (v >>> 8), (byte) v};
     }
 
-    // ===== WRITE HEADER =====
+    // Cabezal
     private void writeHeader(Map<Byte, Integer> freq, int originalLength, int padding, ByteArrayOutputStream out) throws IOException {
         out.write(freq.size());
         for (Map.Entry<Byte, Integer> e : freq.entrySet()) {
@@ -56,7 +56,7 @@ public class HuffmanCompress {
         out.write(padding);                    // padding final
     }
 
-    // ===== COMPRESS =====
+    // Compresion
     public byte[] compress(byte[] input) {
         if (input.length == 0) return new byte[0];
         try {

@@ -51,10 +51,6 @@
                <font>
                   <Font name="Verdana" size="12.0" />
                </font></Label>
-            <Label layoutX="233.0" layoutY="349.0" text="Andry Paolo Gonzales Cantoral - 2000924">
-               <font>
-                  <Font name="Verdana" size="12.0" />
-               </font></Label>
          </children>
       </Pane>
       <Button fx:id="Continue" layoutX="246.0" layoutY="519.0" mnemonicParsing="false" onAction="#handleContinue" prefHeight="46.0" prefWidth="306.0" style="-fx-background-color: transparent; -fx-border-color: #8e8e8e;" text="Continue" textAlignment="CENTER">
