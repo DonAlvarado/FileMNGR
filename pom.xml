@@ -6,9 +6,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>app.filecmpr</groupId>
-    <artifactId>FileCMPR</artifactId>
+    <artifactId>FileMNGR</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>FileCMPR</name>
+    <name>FileMNGR</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,7 +20,7 @@
 
     <dependencies>
         <!-- ========================= -->
-        <!-- JavaFX                    -->
+        <!-- JavaFX Core               -->
         <!-- ========================= -->
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -44,7 +44,7 @@
         </dependency>
 
         <!-- ========================= -->
-        <!-- UI & FX Utils             -->
+        <!-- UI Libraries              -->
         <!-- ========================= -->
         <dependency>
             <groupId>org.controlsfx</groupId>
@@ -77,7 +77,7 @@
         </dependency>
 
         <!-- ========================= -->
-        <!-- Ikonli (icons)            -->
+        <!-- Ikonli (Icons)            -->
         <!-- ========================= -->
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
@@ -89,15 +89,11 @@
             <artifactId>ikonli-javafx</artifactId>
             <version>${ikonli.version}</version>
         </dependency>
-
-        <!-- FontAwesome Pack -->
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-fontawesome-pack</artifactId>
             <version>${ikonli.version}</version>
         </dependency>
-
-        <!-- Material Design 2 Pack -->
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-materialdesign2-pack</artifactId>
@@ -147,33 +143,10 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <!-- Clase principal -->
                             <mainClass>app.filecmpr/app.filecmpr.Main</mainClass>
-
-                            <!-- 🔧 Carga todos los módulos necesarios -->
-                            <modules>
-                                javafx.controls,javafx.fxml,javafx.graphics,javafx.web,
-                                ikonli.core,ikonli.javafx,ikonli.fontawesome,ikonli.materialdesign2
-                            </modules>
-
-                            <!-- Incluye dependencias Ikonli en el runtime -->
-                            <dependencies>
-                                <dependency>
-                                    <groupId>org.kordamp.ikonli</groupId>
-                                    <artifactId>ikonli-fontawesome-pack</artifactId>
-                                    <version>${ikonli.version}</version>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.kordamp.ikonli</groupId>
-                                    <artifactId>ikonli-materialdesign2-pack</artifactId>
-                                    <version>${ikonli.version}</version>
-                                </dependency>
-                            </dependencies>
-
-                            <!-- Empaquetado optimizado -->
-                            <launcher>app</launcher>
-                            <jlinkZipName>app</jlinkZipName>
-                            <jlinkImageName>app</jlinkImageName>
+                            <launcher>FileCMPR</launcher>
+                            <jlinkZipName>FileCMPR</jlinkZipName>
+                            <jlinkImageName>FileCMPR</jlinkImageName>
                             <noManPages>true</noManPages>
                             <stripDebug>true</stripDebug>
                             <noHeaderFiles>true</noHeaderFiles>
@@ -181,6 +154,51 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- ========================= -->
+            <!-- JAR Executable            -->
+            <!-- ========================= -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>app.filecmpr.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!-- Crea un .jar con TODAS las dependencias -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>app.filecmpr.Main</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
