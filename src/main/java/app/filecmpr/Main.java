@@ -18,7 +18,6 @@ public class Main extends Application {
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("FileCMPR");
         stage.setScene(scene);
-        FontIcon test = new FontIcon("fa-cog");
 
         // Carga el icono de la app por que desde las escenas no se puede.
         stage.getIcons().add(

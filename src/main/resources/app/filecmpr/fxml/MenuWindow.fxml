@@ -39,9 +39,6 @@
                  onAction="#showConfig"
                  prefHeight="40"
                  styleClass="sidebar-button">
-            <graphic>
-               <FontIcon iconLiteral="fa-cog" iconSize="18" iconColor="#006FF7"/>
-            </graphic>
          </Button>
 
          <!-- Archivos -->
@@ -49,9 +46,6 @@
                  onAction="#showView"
                  prefHeight="40"
                  styleClass="sidebar-button">
-            <graphic>
-               <FontIcon iconLiteral="fa-folder-open" iconSize="18" iconColor="#006FF7"/>
-            </graphic>
          </Button>
 
          <!-- Estadísticas -->
@@ -59,9 +53,6 @@
                  onAction="#showStats"
                  prefHeight="40"
                  styleClass="sidebar-button">
-            <graphic>
-               <FontIcon iconLiteral="fa-line-chart" iconSize="18" iconColor="#006FF7"/>
-            </graphic>
          </Button>
 
          <!-- Diagrama del Sistema -->
@@ -69,9 +60,6 @@
                  onAction="#showDiagram"
                  prefHeight="40"
                  styleClass="sidebar-button">
-            <graphic>
-               <FontIcon iconLiteral="fa-sitemap" iconSize="18" iconColor="#006FF7"/>
-            </graphic>
          </Button>
       </VBox>
    </left>

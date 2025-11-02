@@ -23,7 +23,6 @@
          <children>
             <HBox alignment="CENTER_LEFT" layoutX="18.0" layoutY="8.0" spacing="10">
                <children>
-                  <FontIcon iconLiteral="fa-cog" iconSize="20" iconColor="white"/>
                   <Label text="Configure"
                          style="-fx-text-fill: white; -fx-font-size: 17px; -fx-font-weight: bold;"/>
                </children>

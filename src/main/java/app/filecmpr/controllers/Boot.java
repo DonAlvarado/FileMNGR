@@ -37,7 +37,6 @@ public class Boot implements Initializable {
         stage.setScene(scene);
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/app/filecmpr/images/appIcon.png")));
         stage.show();
-        FontIcon test = new FontIcon("fa-cog");
 
         // Cierra la escena de bienvenida
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

@@ -20,7 +20,6 @@
          <children>
             <HBox alignment="CENTER_LEFT" layoutX="18" layoutY="8" spacing="10">
                <children>
-                  <FontIcon iconLiteral="fa-folder-open" iconSize="20" iconColor="white"/>
                   <Label text="View Files"
                          style="-fx-text-fill: white; -fx-font-size: 17px; -fx-font-weight: bold;"/>
                </children>
@@ -45,7 +44,6 @@
 
                   <!-- Encabezado -->
                   <HBox spacing="10" alignment="CENTER_LEFT">
-                     <FontIcon iconLiteral="fa-table" iconSize="16" iconColor="#006FF7"/>
                      <Label text="Archivos Originales y Procesados"
                             style="-fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #1E2432;"/>
                   </HBox>
