@@ -1,7 +1,7 @@
 package app.filecmpr.encryption;
 
 public interface Encryptor {
-    byte[] encrypt(byte[] data, String password);
-    byte[] decrypt(byte[] data, String password);
+    byte[] encrypt(byte[] plain, String password) throws Exception;
+    byte[] decrypt(byte[] cipherWithIv, String password) throws Exception;
     String getName();
 }
