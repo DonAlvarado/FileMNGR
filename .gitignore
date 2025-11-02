@@ -79,6 +79,10 @@ config.properties
 *_dec.txt
 *_enc.txt
 
+# Ignorar carpetas del runtime de Java (generadas por jlink o jpackage)
+runtime/
+runtime/**
+
 # =============================
 # ARCHIVOS BINARIOS O EJECUTABLES
 # =============================
