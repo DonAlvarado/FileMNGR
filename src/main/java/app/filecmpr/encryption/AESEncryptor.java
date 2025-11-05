@@ -70,12 +70,12 @@ public class AESEncryptor implements Encryptor {
         cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
         return cipher.doFinal(cipherOnly);
     }
-
+/*
     @Override
     public String getName() {
         return "AES-256-CBC";
     }
-
+*/
     private SecretKeySpec deriveKey(String password) throws Exception {
         PBEKeySpec spec = new PBEKeySpec(
                 password.toCharArray(),

@@ -199,7 +199,7 @@ public class Configure {
     // Procesamiento de archivos
     private void processFile(File file, String operation, String algorithm, String password) throws Exception {
         Compressor comp = CompressionFactory.get(algorithm);
-        Encryptor enc = EncryptionFactory.get("AES-256");
+        Encryptor enc = EncryptionFactory.get("XOR"); //Cambiar aqui
 
         byte[] input = Files.readAllBytes(file.toPath());
         byte[] result = null;

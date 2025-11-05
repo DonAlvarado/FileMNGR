@@ -1,33 +1,23 @@
-//
-
 package app.filecmpr.encryption;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import app.filecmpr.encryption.xor.*;
 
-public final class EncryptionFactory {
+public class EncryptionFactory {
 
-    private static final Map<String, Encryptor> algorithms = new LinkedHashMap<>();
+    private static final Map<String, Encryptor> algorithms = new HashMap<>();
 
     static {
-        // Por ahora solo uno, pero escalable.
-        algorithms.put("AES-256", new AESEncryptor());
+        //algorithms.put("AES-256", new AESEncryptor()); // tu cifrador principal
+        algorithms.put("XOR", new XORlikeEncryptor());  // agregado para compatibilidad con XOR
     }
-
-    private EncryptionFactory() {}
 
     public static Encryptor get(String name) {
         return algorithms.get(name);
     }
 
-    public static Set<String> getAlgorithmNames() {
-        return algorithms.keySet();
-    }
-
-    public static void register(String name, Encryptor enc) {
-        if (name != null && enc != null) {
-            algorithms.put(name, enc);
-        }
+    public static String[] getAvailableAlgorithms() {
+        return algorithms.keySet().toArray(new String[0]);
     }
 }

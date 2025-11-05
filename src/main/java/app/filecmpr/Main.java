@@ -9,7 +9,6 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import app.filecmpr.utils.clearData;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 public class Main extends Application {
     @Override
